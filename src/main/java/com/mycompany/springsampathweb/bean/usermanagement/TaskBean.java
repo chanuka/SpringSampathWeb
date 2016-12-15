@@ -23,6 +23,7 @@ public class TaskBean {
     private Date createdtime;
     private List<StatusBean> statusBeanList;
 
+    
     public String getMessage() {
         return message;
     }

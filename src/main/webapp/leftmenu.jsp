@@ -1,11 +1,11 @@
-<%@page import="com.mycompany.springsampathweb.bean.login.PageBean"%>
-<%@page import="com.mycompany.springsampathweb.bean.login.SectionBean"%>
+<%@page import="com.epic.springsampathweb.bean.login.PageBean"%>
+<%@page import="com.epic.springsampathweb.bean.login.SectionBean"%>
 <%@page import="java.util.TreeSet"%>
 <%@page import="java.util.Set"%>
-<%@page import="com.mycompany.springsampathweb.util.common.SectionComparator"%>
+<%@page import="com.epic.springsampathweb.util.common.SectionComparator"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.HashMap"%>
-<%@page import="com.mycompany.springsampathweb.util.varlist.SessionVarlist"%>
+<%@page import="com.epic.springsampathweb.util.varlist.SessionVarlist"%>
 <head>
     <link href="resources/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" href="resources/css/font-awesome.min.css">

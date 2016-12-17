@@ -166,7 +166,7 @@
                         }
                     },
                     error: function(data) {
-                        window.location = "${pageContext.request.contextPath}/LogoutUserLogin";
+                        window.location = "${pageContext.request.contextPath}/login.jsp";
                     }
                 });
             }
@@ -183,7 +183,7 @@
                         resetAllData();
                     },
                     error: function(data) {
-                        window.location = "${pageContext.request.contextPath}/LogoutUserLogin";
+                        window.location = "${pageContext.request.contextPath}/login.jsp";
                     }
                 });
             }

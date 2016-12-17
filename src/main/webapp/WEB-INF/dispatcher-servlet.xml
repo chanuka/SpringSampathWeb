@@ -39,7 +39,7 @@
 
     <!--<bean name="/index.htm" class="com.myspringproject.controller.WelcomeController"/>-->
 
-    <context:component-scan base-package="com.mycompany.springsampathweb"/>
+    <context:component-scan base-package="com.epic.springsampathweb"/>
     <mvc:annotation-driven/>
     <context:annotation-config />
     <mvc:default-servlet-handler />
@@ -49,7 +49,7 @@
         <mvc:interceptor>  
             <mvc:mapping path="/**" />  
             <mvc:exclude-mapping path="/CheckUserLogin" />
-            <bean class="com.mycompany.springsampathweb.util.interceptor.CheckAccessInteceptor"/>  
+            <bean class="com.epic.springsampathweb.util.interceptor.CheckAccessInteceptor"/>  
                      
         </mvc:interceptor>
         
@@ -80,7 +80,7 @@
     </bean>
 
     <!-- created bean objects -->
-    <bean id="sessionBean" class="com.mycompany.springsampathweb.util.common.SessionBean"
+    <bean id="sessionBean" class="com.epic.springsampathweb.util.common.SessionBean"
               scope="session">
         <!-- this next element effects the proxying of the surrounding bean -->
         <aop:scoped-proxy />

@@ -70,8 +70,8 @@ public class TaskController implements AccessControlService {
     public @ResponseBody
     List<TaskBean> List() {
 
-        List<TaskBean> rateList = taskDAO.getTaskBeanList("");
-        return rateList;
+        List<TaskBean> taskList = taskDAO.getTaskBeanList("");
+        return taskList;
     }
 
     @RequestMapping(value = "/addTask", params = "Add", method = RequestMethod.POST)

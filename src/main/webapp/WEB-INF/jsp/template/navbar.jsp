@@ -1,8 +1,8 @@
 <style>
     .ntb_navbar{
-        padding: 10px 45px 15px 15px;;
+        padding: 10px 45px 0px 15px;;
         position: relative;
-        height: 29px;
+        /*height: 29px;*/
         font-size: 13px;
         margin-top: 5px;
         margin-left: -15px;

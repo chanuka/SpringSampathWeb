@@ -55,11 +55,36 @@
         
     </mvc:interceptors>
     
-    <bean id="viewResolver"
+<!--    <bean id="viewResolver"
           class="org.springframework.web.servlet.view.InternalResourceViewResolver"
           p:prefix="/WEB-INF/jsp/"
-          p:suffix=".jsp" />
+          p:suffix=".jsp" />-->
 
+    
+	<bean id="titlesViewResolver"
+		class="org.springframework.web.servlet.view.tiles3.TilesViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.tiles3.TilesView" />
+		<property name="exposeContextBeansAsAttributes" value="true" />
+	</bean>
+
+
+	<bean id="tilesConfigurer"
+		class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+		<property name="definitions">
+			<list>
+				<value>/WEB-INF/tiles.xml</value>
+			</list>
+		</property>
+	</bean>
+    
+    
+    
+    
+    
+    
+    
+    
     
     <bean id="messageSource"
           class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
@@ -81,7 +106,7 @@
 
     <!-- created bean objects -->
     <bean id="sessionBean" class="com.epic.springsampathweb.util.common.SessionBean"
-              scope="session">
+          scope="session">
         <!-- this next element effects the proxying of the surrounding bean -->
         <aop:scoped-proxy />
     </bean>

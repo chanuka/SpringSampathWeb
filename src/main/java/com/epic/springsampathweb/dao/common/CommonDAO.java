@@ -5,7 +5,7 @@
  */
 package com.epic.springsampathweb.dao.common;
 
-import com.epic.springsampathweb.bean.common.StatusBean;
+import com.epic.springsampathweb.util.common.StatusBean;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

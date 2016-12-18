@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE tiles-definitions PUBLIC
+      "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" 
+      "http://tiles.apache.org/dtds/tiles-config_3_0.dtd"> 
+<tiles-definitions>  
+    <definition name="base.definition"  
+                template="/WEB-INF/jsp/template/home.jsp">  
+        <put-attribute name="title" value="" />  
+        <put-attribute name="header" value="/WEB-INF/jsp/template/header.jsp" />  
+        <put-attribute name="navbar" value="/WEB-INF/jsp/template/navbar.jsp" />  
+        <put-attribute name="menu" value="/WEB-INF/jsp/template/leftmenu.jsp" />  
+        <!--<put-attribute name="message" value="" />-->  
+        <put-attribute name="body" value="" />  
+        <put-attribute name="footer" value="/WEB-INF/jsp/template/footer.jsp" />  
+    </definition>  
+  
+    <definition name="task" extends="base.definition">  
+        <put-attribute name="title" value="Task Management" />  
+        <put-attribute name="body" value="/WEB-INF/jsp/usermanagement/task.jsp" />  
+        <!--<put-attribute name="message" value="/WEB-INF/jsp/template/message.jsp" />-->  
+    </definition>   
+  
+    <definition name="home" extends="base.definition">  
+        <put-attribute name="title" value="Hello Spring MVC" />  
+        <put-attribute name="body" value="/WEB-INF/jsp/template/homeimg.jsp" />  
+        <!--<put-attribute name="message" value="/WEB-INF/jsp/template/message.jsp" />-->  
+
+    </definition>  
+  
+</tiles-definitions>  

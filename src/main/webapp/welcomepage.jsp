@@ -13,7 +13,6 @@
 
         <title>Sampath SMS Solution</title>
 
-        <%@include file="/stylelinks.jspf" %>
     </head>
     <script type="text/javascript">
 

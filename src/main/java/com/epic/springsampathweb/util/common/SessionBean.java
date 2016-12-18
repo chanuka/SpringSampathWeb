@@ -5,7 +5,6 @@
  */
 package com.epic.springsampathweb.util.common;
 
-import com.epic.springsampathweb.bean.common.StatusBean;
 import com.epic.springsampathweb.bean.login.PageBean;
 import com.epic.springsampathweb.bean.login.SectionBean;
 import java.util.HashMap;

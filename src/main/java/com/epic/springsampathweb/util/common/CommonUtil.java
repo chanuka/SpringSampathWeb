@@ -6,6 +6,8 @@
 package com.epic.springsampathweb.util.common;
 
 import com.epic.springsampathweb.util.varlist.TaskVarList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,21 +21,19 @@ import org.springframework.stereotype.Component;
  *
  * @author chanuka
  */
-
 public class CommonUtil {
-    
+
 //    @Autowired
 //    private SessionBean sessionBean;
-
     //checks the accees to the method name passed
-    public boolean checkMethodAccess(String taskcode, String page, String userRole,SessionBean sessionBean) {
+    public boolean checkMethodAccess(String taskcode, String page, String userRole, SessionBean sessionBean) {
         boolean access = false;
         if (taskcode == null || taskcode.isEmpty()) {
             access = false;
         } else {
-            
+
             HashMap<String, List<String>> pageTasks = sessionBean.getPageTasks();
-            
+
             List<String> taskList = pageTasks.get(page);
             if (taskList == null) {
                 access = false;
@@ -44,17 +44,17 @@ public class CommonUtil {
                     if (task.toString().trim().equalsIgnoreCase(taskcode.trim())) {
                         access = true;
                         if (task.toString().equalsIgnoreCase(TaskVarList.VIEW_TASK)) {
-                            
+
                             try {
-                                
+
                                 sessionBean.setCurrentPage(page);
-                                
+
                                 sessionBean.setCurrentSection(page);
-                                
+
                             } catch (Exception ex) {
                                 Logger.getLogger(CommonUtil.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                            
+
                         }
                         break;
                     }
@@ -63,5 +63,17 @@ public class CommonUtil {
         }
         return access;
     }
-    
+
+    public static Date convertStringtoDate(String date) throws Exception {
+        Date fdate = null;
+        try {
+            String pattern = "MM/DD/YYYY HH:mm:SS";
+            SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+            fdate = dateFormat.parse(date);
+        } catch (Exception e) {
+            throw e;
+        }
+        return fdate;
+    }
+
 }

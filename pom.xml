@@ -19,6 +19,17 @@
     </properties>
     
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.apache.tiles/tiles-jsp -->
+        <dependency>
+            <groupId>org.apache.tiles</groupId>
+            <artifactId>tiles-jsp</artifactId>
+            <version>3.0.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tiles</groupId>
+            <artifactId>tiles-core</artifactId>
+            <version>3.0.5</version>
+        </dependency>
         <!-- Need this for json to/from object -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

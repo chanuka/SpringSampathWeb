@@ -5,7 +5,7 @@
  */
 package com.epic.springsampathweb.bean.usermanagement;
 
-import com.epic.springsampathweb.bean.common.StatusBean;
+import com.epic.springsampathweb.util.common.StatusBean;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +21,9 @@ public class TaskBean {
     private String message;
     private Date lastupdatedtime;
     private Date createdtime;
+    private String createdtimeStr;
+    private boolean isUpdateBut;
+    private boolean isAddBut;
     private List<StatusBean> statusBeanList;
 
     public String getMessage() {
@@ -77,6 +80,30 @@ public class TaskBean {
 
     public void setCreatedtime(Date createdtime) {
         this.createdtime = createdtime;
+    }
+
+    public String getCreatedtimeStr() {
+        return createdtimeStr;
+    }
+
+    public void setCreatedtimeStr(String createdtimeStr) {
+        this.createdtimeStr = createdtimeStr;
+    }
+
+    public boolean isIsUpdateBut() {
+        return isUpdateBut;
+    }
+
+    public void setIsUpdateBut(boolean isUpdateBut) {
+        this.isUpdateBut = isUpdateBut;
+    }
+
+    public boolean isIsAddBut() {
+        return isAddBut;
+    }
+
+    public void setIsAddBut(boolean isAddBut) {
+        this.isAddBut = isAddBut;
     }
 
 }

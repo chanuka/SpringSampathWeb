@@ -5,7 +5,7 @@
  */
 package com.epic.springsampathweb.controller.usermanagement;
 
-import com.epic.springsampathweb.bean.common.StatusBean;
+import com.epic.springsampathweb.util.common.StatusBean;
 import com.epic.springsampathweb.bean.usermanagement.TaskBean;
 import com.epic.springsampathweb.dao.usermanagement.TaskDAO;
 import com.epic.springsampathweb.util.common.AccessControlService;
@@ -58,6 +58,8 @@ public class TaskController implements AccessControlService {
 
         List<StatusBean> statusBeanList = sessionBean.getStatusBeanList();
         inputBean.setStatusBeanList(statusBeanList);
+        inputBean.setIsUpdateBut(true);
+        inputBean.setIsAddBut(false);
 
         ModelAndView modelAndView;
 
@@ -79,6 +81,8 @@ public class TaskController implements AccessControlService {
         String message;
         List<StatusBean> statusBeanList = sessionBean.getStatusBeanList();
         inputBean.setStatusBeanList(statusBeanList);
+        inputBean.setIsUpdateBut(true);
+        inputBean.setIsAddBut(false);
         System.out.println("Adddd:");
 
         if (result.hasErrors()) {
@@ -89,6 +93,9 @@ public class TaskController implements AccessControlService {
             message = taskDAO.insertTask(inputBean);
 
             if (message.isEmpty()) {
+                inputBean = new TaskBean();
+                inputBean.setStatusBeanList(statusBeanList);
+
                 model.addAttribute("successMessage", "Add Success");
             } else {
                 model.addAttribute("errorMessage", "Add Error");
@@ -103,21 +110,33 @@ public class TaskController implements AccessControlService {
     }
 
     @RequestMapping(value = "/addTask", params = "Update", method = RequestMethod.POST)
-    public ModelAndView Update(HttpServletRequest request, @ModelAttribute("tasksearchform") TaskBean inputBean, Model model) throws Exception {
+    public ModelAndView Update(HttpServletRequest request, @ModelAttribute("tasksearchform") @Validated TaskBean inputBean, BindingResult result, Model model) throws Exception {
         int message;
         List<StatusBean> statusBeanList = sessionBean.getStatusBeanList();
         inputBean.setStatusBeanList(statusBeanList);
+        inputBean.setIsUpdateBut(false);
+        inputBean.setIsAddBut(true);
+
         System.out.println("updateeeee:");
-        message = taskDAO.updateTask(inputBean);
 
-        if (message > 0) {
-            inputBean = new TaskBean();
-            model.addAttribute("successMessage", "Update Success");
+        if (result.hasErrors()) {
+            System.out.println("validation fail:");
         } else {
-            model.addAttribute("errorMessage", "Update Error");
-        }
+            System.out.println("validation success:");
 
+            message = taskDAO.updateTask(inputBean);
+
+            if (message > 0) {
+                inputBean = new TaskBean();
+                model.addAttribute("successMessage", "Update Success");
+                inputBean.setIsUpdateBut(true);
+                inputBean.setIsAddBut(false);
+            } else {
+                model.addAttribute("errorMessage", "Update Error");
+            }
+        }
         inputBean.setStatusBeanList(statusBeanList);
+
         ModelAndView modelAndView;
 
         modelAndView = new ModelAndView("task", "tasksearchform", inputBean);
@@ -162,7 +181,7 @@ public class TaskController implements AccessControlService {
 
     @Override
     public boolean checkAccess(String method, String userRole) {
-        
+
         System.out.println("called checkAccess");
         boolean status;
         String page = PageVarList.TASK_MGT_PAGE;
@@ -188,7 +207,7 @@ public class TaskController implements AccessControlService {
             task = TaskVarList.VIEW_TASK;
         }
 
-        status = new CommonUtil().checkMethodAccess(task, page, userRole,sessionBean);
+        status = new CommonUtil().checkMethodAccess(task, page, userRole, sessionBean);
 
         return status;
     }

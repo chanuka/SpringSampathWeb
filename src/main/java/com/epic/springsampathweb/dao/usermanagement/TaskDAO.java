@@ -8,6 +8,7 @@ package com.epic.springsampathweb.dao.usermanagement;
 import com.epic.springsampathweb.bean.usermanagement.TaskBean;
 import com.epic.springsampathweb.bean.usermanagement.TaskMapper;
 import com.epic.springsampathweb.dao.common.CommonDAO;
+import com.epic.springsampathweb.util.common.CommonUtil;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,38 +38,41 @@ public class TaskDAO {
         List<TaskBean> taskBeanList = new ArrayList<>();
 
         try {
-            String sql = "select DESCRIPTION , TASKCODE,STATUS,CREATEDTIME from TASK ORDER BY CREATEDTIME DESC";
+            String sql = "select DESCRIPTION , TASKCODE,STATUS,to_char(createdtime,'yyyy-mm-dd HH:MI:SS') AS createdtime  from TASK ORDER BY CREATEDTIME DESC";
 
             List<Map<String, Object>> taskList = jdbcTemplate.queryForList(sql, new Object[]{});
 
             for (Map<String, Object> record : taskList) {
-                TaskBean rate = new TaskBean();
+                TaskBean task = new TaskBean();
 
                 if (record.get("DESCRIPTION") != null && record.get("DESCRIPTION") != "") {
-                    rate.setDescription(record.get("DESCRIPTION").toString());
+                    task.setDescription(record.get("DESCRIPTION").toString());
                 } else {
-                    rate.setDescription("--");
+                    task.setDescription("--");
                 }
 
                 if (record.get("TASKCODE") != null && record.get("TASKCODE") != "") {
-                    rate.setTaskCode(record.get("TASKCODE").toString());
+                    task.setTaskCode(record.get("TASKCODE").toString());
                 } else {
-                    rate.setTaskCode("--");
+                    task.setTaskCode("--");
                 }
 
                 if (record.get("STATUS") != null && record.get("STATUS") != "") {
-                    rate.setStatus(record.get("STATUS").toString());
+                    task.setStatus(record.get("STATUS").toString());
                 } else {
-                    rate.setStatus("--");
+                    task.setStatus("--");
                 }
                 if (record.get("CREATEDTIME") != null && record.get("CREATEDTIME") != "") {
-                    rate.setCreatedtime((Date) record.get(record.get("CREATEDTIME")));
+//                    task.setCreatedtime(CommonUtil.convertStringtoDate("05/12/2016 23:20:16"));
+                    task.setCreatedtimeStr(record.get("CREATEDTIME").toString());
+
                 } else {
 
                 }
-                taskBeanList.add(rate);
+                taskBeanList.add(task);
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return taskBeanList;
@@ -90,7 +94,7 @@ public class TaskDAO {
         return taskBean;
     }
 
-    public int deleteTask(String taskCode) throws Exception{
+    public int deleteTask(String taskCode) throws Exception {
         int count = 0;
 
         try {
@@ -105,15 +109,15 @@ public class TaskDAO {
         return count;
     }
 
-    public int updateTask(TaskBean inputBean) throws Exception{
-        
+    public int updateTask(TaskBean inputBean) throws Exception {
+
         int count = 0;
         inputBean.setLastupdatedtime(commonDAO.getCurrentDate());
-        
+
         try {
             String sql = "update TASK set description=?,status=?,LASTUPDATEDTIME=? WHERE TASKCODE=?";
 
-            count = jdbcTemplate.update(sql, new Object[]{inputBean.getDescription(),inputBean.getStatus(),inputBean.getLastupdatedtime(),inputBean.getTaskCode()});
+            count = jdbcTemplate.update(sql, new Object[]{inputBean.getDescription(), inputBean.getStatus(), inputBean.getLastupdatedtime(), inputBean.getTaskCode()});
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -5,7 +5,7 @@
  */
 package com.epic.springsampathweb.dao.login;
 
-import com.epic.springsampathweb.bean.common.StatusBean;
+import com.epic.springsampathweb.util.common.StatusBean;
 import com.epic.springsampathweb.bean.login.LoginInputBean;
 import com.epic.springsampathweb.bean.login.PageBean;
 import com.epic.springsampathweb.bean.login.SectionBean;

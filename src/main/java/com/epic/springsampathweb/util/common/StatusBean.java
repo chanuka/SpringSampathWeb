@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package com.epic.springsampathweb.bean.common;
+package com.epic.springsampathweb.util.common;
 
 /**
  *

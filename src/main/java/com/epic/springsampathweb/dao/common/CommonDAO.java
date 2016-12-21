@@ -5,6 +5,7 @@
  */
 package com.epic.springsampathweb.dao.common;
 
+import com.epic.springsampathweb.util.common.AuditBean;
 import com.epic.springsampathweb.util.common.StatusBean;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -27,6 +28,8 @@ public class CommonDAO {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+
+    private final String SQL_INSERT_AUDIT = "insert into SYSTEMAUDIT (USERROLECODE,DESCRIPTION,SECTIONCODE,PAGECODE,TASKCODE,IP,OLDVALUE,NEWVALUE, LASTUPDATEDUSER, LASTUPDATEDTIME, CREATEDTIME) values (?,?,?,?,?,?,?,?,?,?,?,?)";
 
     public List<StatusBean> getStatusList(String statusCategory) throws Exception {
         List<StatusBean> statusBeanList = null;
@@ -66,5 +69,30 @@ public class CommonDAO {
         }
         return convertedDate;
 
+    }
+
+    public String insertAudit(AuditBean auditBean)
+            throws Exception {
+        String message = "";
+        int value = 0;
+
+        auditBean.setLastupdatedtime(getCurrentDate());
+        auditBean.setCreatetime(getCurrentDate());
+
+        try {
+            value = jdbcTemplate.update(SQL_INSERT_AUDIT,
+                    new Object[]{auditBean.getUserrole(), auditBean.getDescription(), auditBean.getSection(),
+                        auditBean.getPage(), auditBean.getTask(),auditBean.getIp(),auditBean.getOldvalue(),
+                        auditBean.getNewvalue(),auditBean.getLastupdatedtime(),
+                        auditBean.getCreatetime()});
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "error insert";
+        }
+        if (value == 1) {
+            message = "";
+        }
+        return message;
     }
 }

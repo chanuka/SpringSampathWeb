@@ -29,7 +29,7 @@ public class CommonDAO {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    private final String SQL_INSERT_AUDIT = "insert into SYSTEMAUDIT (USERROLECODE,DESCRIPTION,SECTIONCODE,PAGECODE,TASKCODE,IP,OLDVALUE,NEWVALUE, LASTUPDATEDUSER, LASTUPDATEDTIME, CREATEDTIME) values (?,?,?,?,?,?,?,?,?,?,?,?)";
+    private final String SQL_INSERT_AUDIT = "insert into SYSTEMAUDIT (USERROLECODE,DESCRIPTION,SECTIONCODE,PAGECODE,TASKCODE,IP,OLDVALUE,NEWVALUE, LASTUPDATEDUSER, LASTUPDATEDTIME, CREATETIME) values (?,?,?,?,?,?,?,?,?,?,?)";
 
     public List<StatusBean> getStatusList(String statusCategory) throws Exception {
         List<StatusBean> statusBeanList = null;
@@ -71,6 +71,19 @@ public class CommonDAO {
 
     }
 
+    public String getSectionCode(String pageCode, String userRole) throws Exception {
+        String sectionCode = null;
+        try {
+            String sql = "select SECTIONCODE from SECTIONPAGE where PAGECODE = ? and USERROLECODE=?";
+
+            sectionCode = jdbcTemplate.queryForObject(sql, new Object[]{pageCode, userRole}, String.class);
+        } catch (Exception ee) {
+            ee.printStackTrace();
+
+        }
+        return sectionCode;
+    }
+
     public String insertAudit(AuditBean auditBean)
             throws Exception {
         String message = "";
@@ -82,8 +95,8 @@ public class CommonDAO {
         try {
             value = jdbcTemplate.update(SQL_INSERT_AUDIT,
                     new Object[]{auditBean.getUserrole(), auditBean.getDescription(), auditBean.getSection(),
-                        auditBean.getPage(), auditBean.getTask(),auditBean.getIp(),auditBean.getOldvalue(),
-                        auditBean.getNewvalue(),auditBean.getLastupdatedtime(),
+                        auditBean.getPage(), auditBean.getTask(), auditBean.getIp(), auditBean.getOldvalue(),
+                        auditBean.getNewvalue(), auditBean.getLastupdateduser(),auditBean.getLastupdatedtime(),
                         auditBean.getCreatetime()});
 
         } catch (Exception e) {

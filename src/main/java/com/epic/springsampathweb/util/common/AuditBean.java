@@ -25,6 +25,7 @@ public class AuditBean {
     private Date lastupdatedtime;
     private Date createtime;
     private String description;
+    private boolean skip = true;
 
     public String getUserrole() {
         return userrole;
@@ -113,9 +114,15 @@ public class AuditBean {
     public void setDescription(String description) {
         this.description = description;
     }
-    
-    
-    
-    
 
+    public boolean isSkip() {
+        return skip;
+    }
+
+    public void setSkip(boolean skip) {
+        this.skip = skip;
+    }
+    
+    
+    
 }

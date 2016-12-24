@@ -7,6 +7,7 @@ package com.epic.springsampathweb.util.common;
 
 import com.epic.springsampathweb.bean.login.PageBean;
 import com.epic.springsampathweb.bean.login.SectionBean;
+import com.epic.springsampathweb.bean.usermanagement.SystemUserBean;
 import java.util.HashMap;
 import java.util.List;
 import org.springframework.context.annotation.Scope;
@@ -23,15 +24,24 @@ public class SessionBean {
     HashMap<SectionBean, List<PageBean>> sectionPages;
     HashMap<String, List<String>> pageTasks;
     List<StatusBean> statusBeanList;
-    String systemUser;
+    SystemUserBean systemUser;
+    AuditBean auditTrace;
     String currentPage;
     String currentSection;
 
-    public String getSystemUser() {
+    public AuditBean getAuditTrace() {
+        return auditTrace;
+    }
+
+    public void setAuditTrace(AuditBean auditTrace) {
+        this.auditTrace = auditTrace;
+    }
+
+    public SystemUserBean getSystemUser() {
         return systemUser;
     }
 
-    public void setSystemUser(String systemUser) {
+    public void setSystemUser(SystemUserBean systemUser) {
         this.systemUser = systemUser;
     }
 

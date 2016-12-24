@@ -7,8 +7,10 @@ package com.epic.springsampathweb.controller.usermanagement;
 
 import com.epic.springsampathweb.util.common.StatusBean;
 import com.epic.springsampathweb.bean.usermanagement.TaskBean;
+import com.epic.springsampathweb.dao.common.CommonDAO;
 import com.epic.springsampathweb.dao.usermanagement.TaskDAO;
 import com.epic.springsampathweb.util.common.AccessControlService;
+import com.epic.springsampathweb.util.common.AuditBean;
 import com.epic.springsampathweb.util.common.CommonUtil;
 import com.epic.springsampathweb.util.common.SessionBean;
 import com.epic.springsampathweb.util.validators.TaskValidator;
@@ -47,6 +49,9 @@ public class TaskController implements AccessControlService {
 
     @Autowired
     TaskValidator taskValidator;
+
+    @Autowired
+    CommonUtil commonUtil;
 
     @InitBinder
     public void initBinder(WebDataBinder webDataBinder) {
@@ -90,6 +95,8 @@ public class TaskController implements AccessControlService {
         } else {
             System.out.println("validation success:");
 
+            AuditBean auditBean = commonUtil.makeAuditTrace(request, sessionBean, TaskVarList.ADD_TASK, PageVarList.TASK_MGT_PAGE, "Task added successfully :" + inputBean.getTaskCode(), "new vules", "old Values");
+            sessionBean.setAuditTrace(auditBean);
             message = taskDAO.insertTask(inputBean);
 
             if (message.isEmpty()) {
@@ -124,6 +131,8 @@ public class TaskController implements AccessControlService {
         } else {
             System.out.println("validation success:");
 
+            AuditBean auditBean = commonUtil.makeAuditTrace(request, sessionBean, TaskVarList.UPDATE_TASK, PageVarList.TASK_MGT_PAGE, "Task updated successfully :" + inputBean.getTaskCode(), "new vules", "old Values");
+            sessionBean.setAuditTrace(auditBean);
             message = taskDAO.updateTask(inputBean);
 
             if (message > 0) {
@@ -160,12 +169,16 @@ public class TaskController implements AccessControlService {
 
     @RequestMapping(value = "deleteTask", method = RequestMethod.POST)
     public @ResponseBody
-    TaskBean Delete(@RequestParam String taskCode) throws Exception {
+    TaskBean Delete(HttpServletRequest request,@RequestParam String taskCode) throws Exception {
         TaskBean taskBean = new TaskBean();
 
         try {
 
             System.out.println("called deleteTask :");
+
+            AuditBean auditBean = commonUtil.makeAuditTrace(request, sessionBean, TaskVarList.DELETE_TASK, PageVarList.TASK_MGT_PAGE, "Task deleted successfully :" + taskCode, "new vules", "old Values");
+            sessionBean.setAuditTrace(auditBean);
+
             int count = taskDAO.deleteTask(taskCode);
             if (count > 0) {
                 taskBean.setMessage("delete success");
@@ -207,7 +220,7 @@ public class TaskController implements AccessControlService {
             task = TaskVarList.VIEW_TASK;
         }
 
-        status = new CommonUtil().checkMethodAccess(task, page, userRole, sessionBean);
+        status = commonUtil.checkMethodAccess(task, page, userRole, sessionBean);
 
         return status;
     }

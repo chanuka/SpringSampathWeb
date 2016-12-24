@@ -8,6 +8,7 @@ package com.epic.springsampathweb.dao.usermanagement;
 import com.epic.springsampathweb.bean.usermanagement.TaskBean;
 import com.epic.springsampathweb.bean.usermanagement.TaskMapper;
 import com.epic.springsampathweb.dao.common.CommonDAO;
+import com.epic.springsampathweb.util.common.AuditBean;
 import com.epic.springsampathweb.util.common.CommonUtil;
 import java.util.ArrayList;
 import java.util.Date;
@@ -133,7 +134,7 @@ public class TaskDAO {
 
         inputBean.setLastupdatedtime(commonDAO.getCurrentDate());
         inputBean.setCreatedtime(commonDAO.getCurrentDate());
-
+        
         try {
             value = jdbcTemplate.update(SQL_INSERT_TASK,
                     new Object[]{inputBean.getTaskCode(), inputBean.getDescription(), inputBean.getStatus(), "admin", inputBean.getLastupdatedtime(),

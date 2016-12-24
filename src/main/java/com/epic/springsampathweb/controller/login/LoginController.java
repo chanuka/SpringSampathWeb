@@ -8,6 +8,7 @@ package com.epic.springsampathweb.controller.login;
 import com.epic.springsampathweb.bean.login.LoginInputBean;
 import com.epic.springsampathweb.bean.login.PageBean;
 import com.epic.springsampathweb.bean.login.SectionBean;
+import com.epic.springsampathweb.bean.usermanagement.SystemUserBean;
 import com.epic.springsampathweb.dao.common.CommonDAO;
 import com.epic.springsampathweb.dao.login.LoginDAO;
 import com.epic.springsampathweb.util.common.SessionBean;
@@ -30,49 +31,55 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @Scope("request")
 public class LoginController {
-    
+
     @Autowired
     LoginDAO loginDao;
-    
+
     @Autowired
     CommonDAO commonDAO;
-    
+
     @Autowired
     private SessionBean sessionBean;
-    
+
     @RequestMapping(value = "/CheckUserLogin", method = RequestMethod.POST)
     public ModelAndView checkLogin(HttpServletRequest request) throws Exception {
-        
+
         LoginInputBean bean = loginDao.getUser("admin");
         System.out.println("success :" + bean.getPassword());
-        sessionBean.setSystemUser("admin");
+
         
+        SystemUserBean systemUserBean = new SystemUserBean();
+        systemUserBean.setUserName("admin");
+        systemUserBean.setUserRole("ADMIN");
+
+        sessionBean.setSystemUser(systemUserBean);
+
         HashMap<SectionBean, List<PageBean>> sectionPages = loginDao.getSectionPages("ADMIN");
-        
+
         request.getSession().setAttribute(SessionVarlist.SECTIONPAGELIST, sectionPages);
-        
+
         sessionBean.setSectionPages(sectionPages);
 
 //        sectionPages.forEach((k, v) -> System.out.println("Item : " + k + " Count : " + v));
         sectionPages.entrySet().forEach(entry -> {
             System.out.println("section Key : " + entry.getKey().getDescription() + " Value : " + entry.getValue().get(0).getDescription());
         });
-        
+
         HashMap<String, List<String>> pageTasks = loginDao.getPageTasks("ADMIN");
-        
+
         pageTasks.entrySet().forEach(entry -> {
             System.out.println("page Key : " + entry.getKey() + " Value : " + entry.getValue());
         });
-        
+
         sessionBean.setPageTasks(pageTasks);
-        
+
         sessionBean.setStatusBeanList(commonDAO.getStatusList(StatusVarList.STATUS_DEF_CATEGORY));
-        
+
         ModelAndView modelAndView;
-        
+
         modelAndView = new ModelAndView("home");
-        
+
         return modelAndView;
     }
-    
+
 }

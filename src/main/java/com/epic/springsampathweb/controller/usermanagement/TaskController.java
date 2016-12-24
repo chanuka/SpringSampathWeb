@@ -95,7 +95,8 @@ public class TaskController implements AccessControlService {
         } else {
             System.out.println("validation success:");
 
-            AuditBean auditBean = commonUtil.makeAuditTrace(request, sessionBean, TaskVarList.ADD_TASK, PageVarList.TASK_MGT_PAGE, "Task added successfully :" + inputBean.getTaskCode(), "new vules", "old Values");
+            String newValue = inputBean.getTaskCode() + "|" + inputBean.getDescription() + "|" + inputBean.getStatus();
+            AuditBean auditBean = commonUtil.makeAuditTrace(request, sessionBean, TaskVarList.ADD_TASK, PageVarList.TASK_MGT_PAGE, "Task added successfully :" + inputBean.getTaskCode(), newValue, null);
             sessionBean.setAuditTrace(auditBean);
             message = taskDAO.insertTask(inputBean);
 
@@ -130,8 +131,9 @@ public class TaskController implements AccessControlService {
             System.out.println("validation fail:");
         } else {
             System.out.println("validation success:");
+            String newValue = inputBean.getTaskCode() + "|" + inputBean.getDescription() + "|" + inputBean.getStatus();
 
-            AuditBean auditBean = commonUtil.makeAuditTrace(request, sessionBean, TaskVarList.UPDATE_TASK, PageVarList.TASK_MGT_PAGE, "Task updated successfully :" + inputBean.getTaskCode(), "new vules", "old Values");
+            AuditBean auditBean = commonUtil.makeAuditTrace(request, sessionBean, TaskVarList.UPDATE_TASK, PageVarList.TASK_MGT_PAGE, "Task updated successfully :" + inputBean.getTaskCode(), newValue, sessionBean.getOldValue());
             sessionBean.setAuditTrace(auditBean);
             message = taskDAO.updateTask(inputBean);
 
@@ -161,7 +163,11 @@ public class TaskController implements AccessControlService {
             System.out.println("called findtask :");
             taskBean = taskDAO.getTaskBean(taskCode);
 
+            String oldValue = taskBean.getTaskCode() + "|" + taskBean.getDescription() + "|" + taskBean.getStatus();
+            sessionBean.setOldValue(oldValue);
+
         } catch (Exception e) {
+            e.printStackTrace();
 //			taskBean.setErrormessage("error");
         }
         return taskBean;
@@ -169,14 +175,14 @@ public class TaskController implements AccessControlService {
 
     @RequestMapping(value = "deleteTask", method = RequestMethod.POST)
     public @ResponseBody
-    TaskBean Delete(HttpServletRequest request,@RequestParam String taskCode) throws Exception {
+    TaskBean Delete(HttpServletRequest request, @RequestParam String taskCode) throws Exception {
         TaskBean taskBean = new TaskBean();
 
         try {
 
             System.out.println("called deleteTask :");
 
-            AuditBean auditBean = commonUtil.makeAuditTrace(request, sessionBean, TaskVarList.DELETE_TASK, PageVarList.TASK_MGT_PAGE, "Task deleted successfully :" + taskCode, "new vules", "old Values");
+            AuditBean auditBean = commonUtil.makeAuditTrace(request, sessionBean, TaskVarList.DELETE_TASK, PageVarList.TASK_MGT_PAGE, "Task deleted successfully :" + taskCode, null, null);
             sessionBean.setAuditTrace(auditBean);
 
             int count = taskDAO.deleteTask(taskCode);

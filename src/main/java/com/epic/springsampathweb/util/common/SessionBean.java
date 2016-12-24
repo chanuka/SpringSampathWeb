@@ -28,6 +28,7 @@ public class SessionBean {
     AuditBean auditTrace;
     String currentPage;
     String currentSection;
+    String oldValue;
 
     public AuditBean getAuditTrace() {
         return auditTrace;
@@ -83,6 +84,14 @@ public class SessionBean {
 
     public void setCurrentSection(String currentSection) {
         this.currentSection = currentSection;
+    }
+
+    public String getOldValue() {
+        return oldValue;
+    }
+
+    public void setOldValue(String oldValue) {
+        this.oldValue = oldValue;
     }
 
 }

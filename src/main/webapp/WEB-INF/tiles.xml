@@ -3,6 +3,18 @@
       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" 
       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd"> 
 <tiles-definitions>  
+    
+    <definition name="login.definition" template="/login.jsp">  
+        <put-attribute name="title" value="" />  
+        <put-attribute name="body" value="" />  
+        <put-attribute name="footer" value="/WEB-INF/jsp/template/footer.jsp" />  
+    </definition> 
+    <definition name="login" extends="login.definition">  
+        <put-attribute name="title" value="Hello Spring MVC" />  
+        <put-attribute name="body" value="/login.jsp" />  
+    </definition> 
+    
+    
     <definition name="base.definition"  
                 template="/WEB-INF/jsp/template/home.jsp">  
         <put-attribute name="title" value="" />  
@@ -26,5 +38,5 @@
         <!--<put-attribute name="message" value="/WEB-INF/jsp/template/message.jsp" />-->  
 
     </definition>  
-  
+     
 </tiles-definitions>  

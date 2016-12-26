@@ -79,6 +79,46 @@ public class TaskDAO {
         return taskBeanList;
     }
 
+    public long countTaskForJson(String searchSQL) throws Exception {
+
+        long countTask = 0;
+        String strSqlBasic = null;
+        try {
+
+            strSqlBasic = " SELECT COUNT(*) FROM TASK WHERE " + searchSQL;
+
+            String SQL = strSqlBasic;
+            countTask = jdbcTemplate.queryForObject(SQL,Long.class);
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+            throw e;
+        }
+        return countTask;
+    }
+
+    public List<TaskBean> listTaskForJson(String searchSQL, int start, int end) throws Exception {
+
+        List<TaskBean> OtpTasks = null;
+        String strSqlBasic = null;
+        try {
+
+            strSqlBasic = " SELECT * FROM ( SELECT * FROM (SELECT TASKCODE,DESCRIPTION,STATUS,LASTUPDATEDUSER,LASTUPDATEDTIME,to_char(createdtime,'yyyy-mm-dd HH:MI:SS') AS createdtime,ROWNUM R FROM TASK WHERE " + searchSQL + "  )"
+                    + " WHERE R <=  " + end + "  ) WHERE R > " + start;
+
+            String SQL = strSqlBasic;
+            OtpTasks = jdbcTemplate.query(SQL,
+                    new TaskMapper());
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+            throw e;
+        }
+        return OtpTasks;
+    }
+
     public TaskBean getTaskBean(String taskCode) {
         TaskBean taskBean = null;
 
@@ -134,7 +174,7 @@ public class TaskDAO {
 
         inputBean.setLastupdatedtime(commonDAO.getCurrentDate());
         inputBean.setCreatedtime(commonDAO.getCurrentDate());
-        
+
         try {
             value = jdbcTemplate.update(SQL_INSERT_TASK,
                     new Object[]{inputBean.getTaskCode(), inputBean.getDescription(), inputBean.getStatus(), "admin", inputBean.getLastupdatedtime(),

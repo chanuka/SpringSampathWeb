@@ -23,7 +23,8 @@ public class TaskMapper implements RowMapper<TaskBean> {
 		  task.setStatus(rs.getString("STATUS"));
 		  task.setDescription(rs.getString("DESCRIPTION"));
 		  task.setLastupdatedtime((rs.getDate("LASTUPDATEDTIME")));
-		  task.setCreatedtime((rs.getDate("CREATEDTIME")));
+//		  task.setCreatedtime((rs.getDate("CREATEDTIME")));
+		  task.setCreatedtimeStr((rs.getString("CREATEDTIME")));
 
 	      return task;
 	   }

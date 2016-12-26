@@ -86,7 +86,7 @@
                         <a title="Change Password" href="ViewChangePassword.action?message=error3" id="linka" class="btn1" onmouseover="changepasshover();" onmouseout="changepassout();"><span style="color: #cccccc;">Change Password&nbsp&nbsp&nbsp<i id="changepassword" class="fa fa-lock" aria-hidden="true"></i></span></a>
                     </div>
                     <div id="btnin">
-                        <a title="Logout" href="LogoutUserLogin.action?message=error3" id="linka" class="btn2" onmouseover="login();" onmouseout="logout();"><span style="color: #ffcc33;">Logout&nbsp&nbsp&nbsp<i id="login_out" class="fa fa-chevron-circle-left" aria-hidden="true"></i></span></a>
+                        <a title="Logout" href="LogoutUserLogin?message=error3" id="linka" class="btn2" onmouseover="login();" onmouseout="logout();"><span style="color: #ffcc33;">Logout&nbsp&nbsp&nbsp<i id="login_out" class="fa fa-chevron-circle-left" aria-hidden="true"></i></span></a>
                     </div>
                     <div id="btnin">
                         <a title="View Last Login details" href="#" id="linka" class="btn1"><span style="color:#ffffff;">Last Login Details&nbsp&nbsp&nbsp<i class="fa fa-info-circle" aria-hidden="true"></i></span></a>
@@ -97,7 +97,7 @@
     </div> 
     <div id="detailsall">
         <span id="lastlog" style="padding-right: 150px;display: none;" >Last login date time:<span style="color: white;"> ${LOGGEDDATE}</span></span>
-        <span style="margin-right: 450px;"><span style="padding-right: 10px;" > Welcome,&nbsp;<span style="color: #ececec;">${SYSTEMUSER.username} </span>&nbsp&nbsp|&nbsp&nbsp User Role: <span style="color: #ececec;">${SYSTEMUSER.userrole.description}</span>
+        <span style="margin-right: 450px;"><span style="padding-right: 10px;" > Welcome,&nbsp;<span style="color: #ececec;">${SYSTEMUSER.userName} </span>&nbsp&nbsp|&nbsp&nbsp User Role: <span style="color: #ececec;">${SYSTEMUSER.userRoleDes}</span>
             </span><span style="color:white;padding-right: 10px;">|&nbsp&nbsp&nbsp${CURRENTDATE}</span></span>
     </div>
     <div style=" background: #EE7202;box-shadow: 0 2px 5px #908e8e;height: 5px;z-index: 10;"></div>

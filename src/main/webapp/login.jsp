@@ -71,7 +71,7 @@
                                             <form id="login-form" class="login-form" novalidate="novalidate" action="CheckUserLogin" method="post">
                                                 <div class="input-group form-group">
                                                     <span class="input-group-addon"><i class="glyphicon glyphicon-user" style="color:#999999;"></i></span>
-                                                    <input type="text" class="form-control" placeholder="Username" name="username">
+                                                    <input type="text" class="form-control" placeholder="userName" name="userName">
                                                 </div>
                                                 <div class="input-group form-group">
                                                     <span class="input-group-addon"><i class="glyphicon glyphicon-lock" style="color:#999999;"></i></span>
@@ -85,19 +85,25 @@
                                     </div>
                                 </div>
                             </div>
-                            <s:if test="hasActionErrors()">
-                                <div class="error-dis">
-                                    <i class="fa fa-remove-sign" style="color: #EE7202 ; font-family: sans-serif; font-weight: bold;text-shadow: 0 1px 1px #000;"> <s:property default="errormessage" value="errormessage"></s:property></i>
-
+                            <div id="divmsg">
+                                <!-- success Message -->
+                                <c:set var="successmsg" value="${successMessage}" />
+                                <c:if test="${not empty successmsg}">
+                                    <div id="msgsuccess" class="icon">
+                                        <span class="tile-title message-success"><c:out
+                                                value="${successMessage}" /></span>
                                     </div>
-                            </s:if>
-                            <s:if test="hasActionMessages()">
-                                <!--<div class="errorHandler alert alert-danger no-display2222">-->
-                                <div class="error-dis">
-                                    <i class="fa fa-remove-sign" style="color: green; font-family: sans-serif">   <s:property default="errormessage" value="errormessage"></s:property></i>
-                                        <!--</div>-->
-                                    </div>  
-                            </s:if>
+                                </c:if>
+                                <!-- Error Message -->
+                                <c:set var="errorMessage" value="${errorMessage}" />
+                                <c:if test="${not empty errorMessage}">
+                                    <div id="msgerror" class="icon">
+                                        <span class="tile-title message-error">
+                                            <c:out value="${errorMessage}" />
+                                        </span>
+                                    </div>
+                                </c:if>
+                            </div>
 
                         </div>
                     </div>	
@@ -110,11 +116,11 @@
         <div class="copyright" style="background-color: gray">
             <!--<font id="versionno"></font>-->
             <span style="font-family: sans-serif; color: white; font-size: 12px ; text-shadow: 0 0 5px black;">
-            <%                String param1 = application.getInitParameter("version");
-                out.println(param1);
-            %>
+                <%                String param1 = application.getInitParameter("version");
+                    out.println(param1);
+                %>
 
-            Copyright © 2016 <a href="http://www.epiclanka.net/"><span style="color: black; text-shadow: 0 0 0 black;">Epic Lanka (pvt) Ltd.</a> All rights reserved.</span>
+                Copyright © 2016 <a href="http://www.epiclanka.net/"><span style="color: black; text-shadow: 0 0 0 black;">Epic Lanka (pvt) Ltd.</a> All rights reserved.</span>
         </div>
         <!-- end: COPYRIGHT -->
     </body><!-- end: BODY -->

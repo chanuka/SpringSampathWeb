@@ -5,19 +5,21 @@
  */
 package com.epic.springsampathweb.controller.usermanagement;
 
-import com.epic.springsampathweb.util.common.StatusBean;
 import com.epic.springsampathweb.bean.usermanagement.TaskBean;
-import com.epic.springsampathweb.dao.common.CommonDAO;
 import com.epic.springsampathweb.dao.usermanagement.TaskDAO;
 import com.epic.springsampathweb.util.common.AccessControlService;
 import com.epic.springsampathweb.util.common.AuditBean;
 import com.epic.springsampathweb.util.common.CommonUtil;
+import com.epic.springsampathweb.util.common.DataTablesRequest;
+import com.epic.springsampathweb.util.common.DataTablesResponse;
 import com.epic.springsampathweb.util.common.SessionBean;
+import com.epic.springsampathweb.util.common.StatusBean;
 import com.epic.springsampathweb.util.validators.TaskValidator;
 import com.epic.springsampathweb.util.varlist.PageVarList;
 import com.epic.springsampathweb.util.varlist.TaskVarList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,7 +56,7 @@ public class TaskController implements AccessControlService {
     @Autowired
     CommonUtil commonUtil;
 
-    @InitBinder
+    @InitBinder("tasksearchform")
     public void initBinder(WebDataBinder webDataBinder) {
         webDataBinder.setValidator(taskValidator);
     }
@@ -73,12 +76,57 @@ public class TaskController implements AccessControlService {
         return modelAndView;
     }
 
-    @RequestMapping(value = "listTask")
-    public @ResponseBody
-    List<TaskBean> List() {
+//    @RequestMapping(value = "listTask")
+//    public @ResponseBody
+//    List<TaskBean> List() {
+//
+//        List<TaskBean> taskList = taskDAO.getTaskBeanList("");
+//        return taskList;
+//    }
 
-        List<TaskBean> taskList = taskDAO.getTaskBeanList("");
-        return taskList;
+    @RequestMapping(value = "/listTask")
+    public @ResponseBody
+    DataTablesResponse<TaskBean> List(@RequestBody DataTablesRequest dtReq, HttpServletResponse response) throws Exception {
+
+        // Column names of the table view
+        String[] cols = {"TASKCODE", "DESCRIPTION", "STATUS", "LASTUPDATEDUSER", "LASTUPDATEDTIME", "CREATEDTIME"};
+
+        String globalSearch = "";
+        String searchSQL = "";
+
+        if (!dtReq.searchQuery.contains("'") && !dtReq.searchQuery.contains("\"")) {
+
+            globalSearch = " (TASKCODE LIKE '%" + dtReq.searchQuery + "%'"
+                    + " OR DESCRIPTION LIKE '%" + dtReq.searchQuery + "%'"
+                    + " OR STATUS LIKE '%" + dtReq.searchQuery + "%'"
+                    + " OR LASTUPDATEDUSER LIKE '%" + dtReq.searchQuery + "%'"
+                    + " OR LASTUPDATEDTIME LIKE '%" + dtReq.searchQuery + "%'"
+                    + " OR CREATEDTIME LIKE '%" + dtReq.searchQuery + "%')";
+        } else {
+            globalSearch = "1=1";
+        }
+
+        searchSQL = globalSearch;
+
+        // Ordering and limiting for pagination
+        searchSQL += " ORDER BY " + cols[dtReq.sortedColumns.get(0)] + " " + dtReq.sortDirections.get(0);
+
+        int end = dtReq.displayLength + dtReq.displayStart;
+
+        List<TaskBean> listotptask = taskDAO.listTaskForJson(searchSQL, dtReq.displayStart, end);
+
+        long countTasks = taskDAO.countTaskForJson(searchSQL);
+
+        DataTablesResponse<TaskBean> restask = new DataTablesResponse<TaskBean>();
+        restask.data.addAll(listotptask);
+
+        restask.echo = dtReq.echo;
+        restask.columns = dtReq.columns;
+
+        restask.totalRecords = countTasks;
+        restask.totalDisplayRecords = countTasks;
+
+        return restask;
     }
 
     @RequestMapping(value = "/addTask", params = "Add", method = RequestMethod.POST)

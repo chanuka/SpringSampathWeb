@@ -17,62 +17,170 @@
         <script type="text/javascript">
 
             var oTable;
-
             $(document).ready(function() {
-                oTable = $("#table").DataTable({
-                    "data": "",
-                    "pDestroy": true,
-                    "ajax": {
-                        "url": "listTask",
-                        "type": "post",
-                        "data": "",
-                        "dataSrc": function(data) {
-                            return data;
+
+                var token = $("meta[name='_csrf']").attr("content");
+                var header = $("meta[name='_csrf_header']").attr("content");
+                var stringify_aoData = function(aoData) {
+                    var o = {};
+                    var modifiers = ['mDataProp_', 'sSearch_', 'iSortCol_', 'bSortable_', 'bRegex_', 'bSearchable_', 'sSortDir_'];
+                    jQuery.each(aoData, function(idx, obj) {
+                        if (obj.name) {
+                            for (var i = 0; i < modifiers.length; i++) {
+                                if (obj.name.substring(0, modifiers[i].length) == modifiers[i]) {
+                                    var index = parseInt(obj.name.substring(modifiers[i].length));
+                                    var key = 'a' + modifiers[i].substring(0, modifiers[i].length - 1);
+                                    if (!o[key]) {
+                                        o[key] = [];
+                                    }
+                                    //  console.log('index=' + index);
+                                    o[key][index] = obj.value;
+                                    //console.log(key + ".push(" + obj.value + ")");
+                                    return;
+                                }
+                            }
+                            // console.log(obj.name+"=" + obj.value);
+                            o[obj.name] = obj.value;
                         }
+                        else {
+                            o[idx] = obj;
+                        }
+                    });
+                    return JSON.stringify(o);
+                };
+
+
+                oTable = $('#table').dataTable({
+                    "bProcessing": true,
+                    "bServerSide": true,
+                    "sAjaxSource": "${pageContext.servletContext.contextPath}/listTask",
+                    "fnServerData": function(sSource, aoData, fnCallback) {
+                        //    	alert(token);
+                        aoData.push({'name': 'csrf_token', 'value': token});
+                        aoData.push({'name': 'header', 'value': header});
+
+                        $.ajax({
+                            dataType: 'json',
+                            contentType: "application/json;charset=UTF-8",
+                            type: 'POST',
+                            url: "${pageContext.servletContext.contextPath}/listTask",
+                            data: stringify_aoData(aoData),
+                            success: fnCallback,
+                            error: function(e) {
+//                                alert(e);
+                                window.location = "${pageContext.request.contextPath}/login.jsp";
+                            }
+                        });
                     },
-                    "columnDefs": [
-                        {
-                            "title": "Task Code",
-                            "targets": 0,
-                            "mDataProp": "taskCode"
-                        },
-                        {
-                            "title": "Description",
-                            "targets": 1,
-                            "mDataProp": "description"
-                        },
-                        {
-                            "title": "Status",
-                            "targets": 2,
-                            "mDataProp": "status"
-                        },
-                        {
-                            "title": "Created Time",
-                            "targets": 3,
-                            "mDataProp": "createdtimeStr"
-                        }, {
-                            "title": "Edit",
-                            sortable: false,
-                            "render": function(data, type, full, meta) {
-
-                                return '<a title="Edit Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="editTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-edit"></span></a>';
-                            },
-                            "targets": 4
-                        }, {
-                            "title": "Delete",
-                            sortable: false,
-                            "render": function(data, type, full, meta) {
-                                return '<a title="Delete Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="deleteTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-remove"></span></a>';
-                            },
-                            "targets": 5
-                        }],
-                    "sPaginationType": "full_numbers",
+                    "fnRowCallback": function(nRow, aData, iDisplayIndex) {
+                        if (iDisplayIndex % 2 == 1)
+                            nRow.className = "gradeA odd";
+                        else
+                            nRow.className = "gradeA even";
+                        return nRow;
+                    },
                     "bJQueryUI": true,
+                    "sPaginationType": "full_numbers",
                     bDeferRender: true,
-                    responsive: true
-                });
-            });
+                    responsive: true,
+                    "aoColumns": [
+                        {"mDataProp": "taskCode", "bVisible": true},
+                        {"mDataProp": "description", "bVisible": true},
+                        {"mDataProp": "status", "bVisible": true},
+                        {"mDataProp": "createdtimeStr", "bVisible": true},
+                        {"mData": "taskCode", "bVisible": true, "bSortable": false},
+                        {"mDataProp": "taskCode", "bVisible": true, "bSortable": false}
+                    ],
+                    "aoColumnDefs": [
+                        {
+                            "aTargets": [4],
+                            "mRender": function(data, type, full) {
+                                return '<a title="Edit Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="editTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-edit"></span></a>';
+                            }
 
+                        },
+                        {
+                            "aTargets": [5],
+                            "mRender": function(data, type, full) {
+                                return '<a title="Delete Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="deleteTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-remove"></span></a>';
+                            }
+
+                        }
+
+                    ]
+                });
+            }); // end of document.ready function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//            var oTable;
+//
+//            $(document).ready(function() {
+//                oTable = $("#table").DataTable({
+//                    "data": "",
+//                    "pDestroy": true,
+//                    "ajax": {
+//                        "url": "listTask",
+//                        "type": "post",
+//                        "data": "",
+//                        "dataSrc": function(data) {
+//                            return data;
+//                        }
+//                    },
+//                    "columnDefs": [
+//                        {
+//                            "title": "Task Code",
+//                            "targets": 0,
+//                            "mDataProp": "taskCode"
+//                        },
+//                        {
+//                            "title": "Description",
+//                            "targets": 1,
+//                            "mDataProp": "description"
+//                        },
+//                        {
+//                            "title": "Status",
+//                            "targets": 2,
+//                            "mDataProp": "status"
+//                        },
+//                        {
+//                            "title": "Created Time",
+//                            "targets": 3,
+//                            "mDataProp": "createdtimeStr"
+//                        }, {
+//                            "title": "Edit",
+//                            sortable: false,
+//                            "render": function(data, type, full, meta) {
+//
+//                                return '<a title="Edit Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="editTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-edit"></span></a>';
+//                            },
+//                            "targets": 4
+//                        }, {
+//                            "title": "Delete",
+//                            sortable: false,
+//                            "render": function(data, type, full, meta) {
+//                                return '<a title="Delete Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="deleteTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-remove"></span></a>';
+//                            },
+//                            "targets": 5
+//                        }],
+//                    "sPaginationType": "full_numbers",
+//                    "bJQueryUI": true,
+//                    bDeferRender: true,
+//                    responsive: true
+//                });
+//            });
+//
 
 
             function editTask(keyval) {
@@ -118,7 +226,8 @@
                     dataType: 'json',
                     success: function(data) {
                         alert(data.message);
-                        oTable.ajax.reload();
+//                        oTable.ajax.reload();
+                        oTable.fnDraw();
                         resetAllData();
                     },
                     error: function(data) {
@@ -135,7 +244,6 @@
                 $('#status').val("");
                 $('#updateButton').prop('disabled', true);
                 $('#addButton').prop('disabled', false);
-
             }
         </script>
         <title></title>
@@ -246,15 +354,29 @@
 
             <div id="tablediv">
 
-                <table id="table" >
+                <!--                <table id="table" >
+                                    <thead>
+                                        <tr>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>-->
+
+                <table class="display" id="table">
                     <thead>
-                        <tr>
-                        </tr>
+                        <th class="heading">Task Code</th>
+                        <th class="heading">Description</th>
+                        <th class="heading">Status</th>
+                        <th class="heading">Created Time</th>
+                        <%--<c:if test="${tasksearchform.isAddBut}"><th class="heading">Edit</th></c:if>--%>
+                        <th class="heading">Edit</th>
+                        <th class="heading">Delete</th>
                     </thead>
                     <tbody>
                     </tbody>
-                </table>
 
+                </table>
             </div>
         </div>
 

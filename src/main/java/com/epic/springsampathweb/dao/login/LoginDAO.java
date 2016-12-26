@@ -5,16 +5,20 @@
  */
 package com.epic.springsampathweb.dao.login;
 
-import com.epic.springsampathweb.util.common.StatusBean;
-import com.epic.springsampathweb.bean.login.LoginInputBean;
 import com.epic.springsampathweb.bean.login.PageBean;
 import com.epic.springsampathweb.bean.login.SectionBean;
+import com.epic.springsampathweb.bean.usermanagement.SystemUserBean;
+import com.epic.springsampathweb.bean.usermanagement.SystemUserMapper;
+import com.epic.springsampathweb.bean.usermanagement.TaskBean;
+import com.epic.springsampathweb.bean.usermanagement.TaskMapper;
+import com.epic.springsampathweb.util.common.StatusBean;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -29,38 +33,49 @@ public class LoginDAO {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    private final String SQL_FIRST_LOGIN = "select PASSWORD,username,FULLNAME,STATUSCODE from SYSTEMUSER where lower(username)=?";
+    private final String SQL_FIRST_LOGIN = "select su.PASSWORD,su.username,su.FULLNAME,su.STATUSCODE,su.USERROLECODE,UR.DESCRIPTION AS USERROLEDES,su.EXPIRYDATE from SYSTEMUSER SU,USERROLE UR where SU.USERROLECODE=UR.USERROLECODE AND lower(su.username)=?";
     private final String SQL_SECTIONPAGE = "SELECT S.SECTIONCODE,S.DESCRIPTION as sectiondes,P.PAGECODE,P.DESCRIPTION as pagedes,P.URL FROM SECTIONPAGE SP,PAGE P,SECTION S WHERE SP.USERROLECODE = ? AND P.PAGECODE = SP.PAGECODE AND P.PAGECODE !='LGPG' AND P.STATUS = 'ACT' AND SP.SECTIONCODE=S.SECTIONCODE AND S.STATUS = 'ACT'";
 //    private final String SQL_USERSECTION = "SELECT S.SECTIONCODE,S.DESCRIPTION as sectiondes FROM USERROLESECTION US,SECTION S WHERE US.USERROLECODE = ? AND US.SECTIONCODE=S.SECTIONCODE AND S.STATUS = 'ACT'";
 //    private final String SQL_SECTIONPAGE = "SELECT P.PAGECODE,P.DESCRIPTION as pagedes,P.URL FROM SECTIONPAGE SP,PAGE P WHERE SP.USERROLECODE = ? AND P.PAGECODE = SP.PAGECODE AND P.PAGECODE !='LGPG' AND P.STATUS = 'ACT' AND SP.SECTIONCODE=?";
     private final String SQL_PAGETASK = "select P.PAGECODE,T.TASKCODE from PAGETASK PT,PAGE P,TASK T where PT.USERROLECODE = ? and PT.PAGECODE = P.PAGECODE and PT.TASKCODE=T.TASKCODE and T.STATUS='ACT' and P.STATUS='ACT'";
 
-    public LoginInputBean getUser(String username) throws Exception {
+//    public SystemUserBean getUser(String username) throws Exception {
+//
+//        SystemUserBean inputBean = new SystemUserBean();
+//
+//        Map<String, Object> listmap = jdbcTemplate.queryForMap(SQL_FIRST_LOGIN, new Object[]{username});
+//
+//        if (!listmap.isEmpty()) {
+//
+//            inputBean.setPassword(listmap.get("password") + "");
+//            inputBean.setUserName(username);
+//            inputBean.setUserRole(listmap.get("USERROLECODE") + "");
+//            inputBean.setFirstname(listmap.get("firstname") + "");
+//            inputBean.setStatus(listmap.get("status") + "");
+//            inputBean.setMessage("");
+//            return inputBean;
+//
+//        } else {
+//
+//            inputBean.setMessage("Invalid");
+//            return inputBean;
+//        }
+//    }
+    public SystemUserBean getUser(String userName) {
+        SystemUserBean userBean = null;
 
-        LoginInputBean inputBean = new LoginInputBean();
-        String fullName = "";
-        String password = "";
-        String status = "";
-        Map<String, Object> listmap = jdbcTemplate.queryForMap(SQL_FIRST_LOGIN, new Object[]{username});
+        try {
 
-        if (listmap.size() != 0) {
+            userBean = jdbcTemplate.queryForObject(SQL_FIRST_LOGIN, new Object[]{userName}, new SystemUserMapper());
 
-            password = listmap.get("password") + "";
-            fullName = listmap.get("firstname") + "";
-            status = listmap.get("status") + "";
-
-            inputBean.setPassword(password);
-            inputBean.setUsername(username);
-            inputBean.setFirstname(fullName);
-            inputBean.setStatus(status);
-            inputBean.setMessage("");
-            return inputBean;
-
-        } else {
-
-            inputBean.setMessage("Invalid");
-            return inputBean;
+        } catch (EmptyResultDataAccessException ee) {
+            userBean = new SystemUserBean();
+            userBean.setMessage("Invalid");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        return userBean;
     }
 
     public HashMap<SectionBean, List<PageBean>> getSectionPages(String userrole) throws Exception {

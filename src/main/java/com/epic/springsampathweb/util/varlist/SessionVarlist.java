@@ -11,5 +11,8 @@ package com.epic.springsampathweb.util.varlist;
 public class SessionVarlist {
 
     public static final String SECTIONPAGELIST = "SECTIONPAGELIST";
+    public static final String SYSTEMUSER = "SYSTEMUSER";
+    public static final String LOGGEDDATE = "LOGGEDDATE";
+    public static final String CURRENTDATE = "CURRENTDATE";
     
 }

@@ -48,8 +48,6 @@
                     });
                     return JSON.stringify(o);
                 };
-
-
                 oTable = $('#table').dataTable({
                     "bProcessing": true,
                     "bServerSide": true,
@@ -58,7 +56,6 @@
                         //    	alert(token);
                         aoData.push({'name': 'csrf_token', 'value': token});
                         aoData.push({'name': 'header', 'value': header});
-
                         $.ajax({
                             dataType: 'json',
                             contentType: "application/json;charset=UTF-8",
@@ -72,55 +69,166 @@
                             }
                         });
                     },
-                    "fnRowCallback": function(nRow, aData, iDisplayIndex) {
-                        if (iDisplayIndex % 2 == 1)
-                            nRow.className = "gradeA odd";
-                        else
-                            nRow.className = "gradeA even";
-                        return nRow;
-                    },
+//                    "fnRowCallback": function(nRow, aData, iDisplayIndex) {
+//                        if (iDisplayIndex % 2 == 1)
+//                            nRow.className = "gradeA odd";
+//                        else
+//                            nRow.className = "gradeA even";
+//                        return nRow;
+//                    },
                     "bJQueryUI": true,
                     "sPaginationType": "full_numbers",
                     bDeferRender: true,
                     responsive: true,
-                    "aoColumns": [
-                        {"mDataProp": "taskCode", "bVisible": true},
-                        {"mDataProp": "description", "bVisible": true},
-                        {"mDataProp": "status", "bVisible": true},
-                        {"mDataProp": "createdtimeStr", "bVisible": true},
-                        {"mData": "taskCode", "bVisible": true, "bSortable": false},
-                        {"mDataProp": "taskCode", "bVisible": true, "bSortable": false}
-                    ],
-                    "aoColumnDefs": [
+                    "columnDefs": [
                         {
-                            "aTargets": [4],
-                            "mRender": function(data, type, full) {
-                                return '<a title="Edit Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="editTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-edit"></span></a>';
-                            }
-
+                            "title": "Task Code",
+                            "targets": 0,
+                            "mDataProp": "taskCode"
                         },
                         {
-                            "aTargets": [5],
-                            "mRender": function(data, type, full) {
+                            "title": "Description",
+                            "targets": 1,
+                            "mDataProp": "description"
+                        },
+                        {
+                            "title": "Status",
+                            "targets": 2,
+                            "mDataProp": "statusDes"
+                        },
+                        {
+                            "title": "Created Time",
+                            "targets": 3,
+                            "mDataProp": "createdtimeStr"
+                        }, {
+                            "title": "Edit",
+                            sortable: false,
+//                            "sClass": "testclass",
+                            "render": function(data, type, full, meta) {
+
+                                return '<a title="Edit Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="editTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-edit"></span></a>';
+                            },
+                            "targets": 4
+                        }, {
+                            "title": "Delete",
+                            sortable: false,
+//                            "sClass":"testclass",
+                            "render": function(data, type, full, meta) {
                                 return '<a title="Delete Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="deleteTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-remove"></span></a>';
-                            }
+                            },
+                            "targets": 5
 
-                        }
-
-                    ]
+                        }]
                 });
             }); // end of document.ready function
 
 
+//-------------------------------------------------------------------------------------------------------------------------------
+
+
+//            var oTable;
+//            $(document).ready(function() {
+//
+//                var token = $("meta[name='_csrf']").attr("content");
+//                var header = $("meta[name='_csrf_header']").attr("content");
+//                var stringify_aoData = function(aoData) {
+//                    var o = {};
+//                    var modifiers = ['mDataProp_', 'sSearch_', 'iSortCol_', 'bSortable_', 'bRegex_', 'bSearchable_', 'sSortDir_'];
+//                    jQuery.each(aoData, function(idx, obj) {
+//                        if (obj.name) {
+//                            for (var i = 0; i < modifiers.length; i++) {
+//                                if (obj.name.substring(0, modifiers[i].length) == modifiers[i]) {
+//                                    var index = parseInt(obj.name.substring(modifiers[i].length));
+//                                    var key = 'a' + modifiers[i].substring(0, modifiers[i].length - 1);
+//                                    if (!o[key]) {
+//                                        o[key] = [];
+//                                    }
+//                                    //  console.log('index=' + index);
+//                                    o[key][index] = obj.value;
+//                                    //console.log(key + ".push(" + obj.value + ")");
+//                                    return;
+//                                }
+//                            }
+//                            // console.log(obj.name+"=" + obj.value);
+//                            o[obj.name] = obj.value;
+//                        }
+//                        else {
+//                            o[idx] = obj;
+//                        }
+//                    });
+//                    return JSON.stringify(o);
+//                };
+//
+//
+//                oTable = $('#table').dataTable({
+//                    "bProcessing": true,
+//                    "bServerSide": true,
+//                    "sAjaxSource": "${pageContext.servletContext.contextPath}/listTask",
+//                    "fnServerData": function(sSource, aoData, fnCallback) {
+//                        //    	alert(token);
+//                        aoData.push({'name': 'csrf_token', 'value': token});
+//                        aoData.push({'name': 'header', 'value': header});
+//
+//                        $.ajax({
+//                            dataType: 'json',
+//                            contentType: "application/json;charset=UTF-8",
+//                            type: 'POST',
+//                            url: "${pageContext.servletContext.contextPath}/listTask",
+//                            data: stringify_aoData(aoData),
+//                            success: fnCallback,
+//                            error: function(e) {
+////                                alert(e);
+//                                window.location = "${pageContext.request.contextPath}/login.jsp";
+//                            }
+//                        });
+//                    },
+//                    "fnRowCallback": function(nRow, aData, iDisplayIndex) {
+//                        if (iDisplayIndex % 2 == 1)
+//                            nRow.className = "gradeA odd";
+//                        else
+//                            nRow.className = "gradeA even";
+//                        return nRow;
+//                    },
+//                    "bJQueryUI": true,
+//                    "sPaginationType": "full_numbers",
+//                    bDeferRender: true,
+//                    responsive: true,
+//                    "aoColumns": [
+//                        {"mDataProp": "taskCode", "bVisible": true},
+//                        {"mDataProp": "description", "bVisible": true},
+//                        {"mDataProp": "statusDes", "bVisible": true},
+//                        {"mDataProp": "createdtimeStr", "bVisible": true},
+//                        {"mDataProp": "taskCode", "bVisible": true, "bSortable": false},
+//                        {"mDataProp": "taskCode", "bVisible": true, "bSortable": false}
+//                    ],
+//                    "aoColumnDefs": [
+//                        {
+//                            "aTargets": [4],
+//                            "mRender": function(data, type, full) {
+//                                return '<a title="Edit Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="editTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-edit"></span></a>';
+//                            }
+//
+//                        },
+//                        {
+//                            "aTargets": [5],
+//                            "mRender": function(data, type, full) {
+//                                return '<a title="Delete Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="deleteTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-remove"></span></a>';
+//                            }
+//
+//                        }
+//
+//                    ]
+//                });
+//            }); // end of document.ready function
+//
+//
 
 
 
 
 
 
-
-
-
+//-------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -244,8 +352,14 @@
                 $('#status').val("");
                 $('#updateButton').prop('disabled', true);
                 $('#addButton').prop('disabled', false);
+                oTable.fnDraw();
             }
         </script>
+        <style>
+            .testclass {
+                display:none;
+            }
+        </style>
         <title></title>
     </head>
     <body style="">
@@ -354,29 +468,29 @@
 
             <div id="tablediv">
 
-                <!--                <table id="table" >
-                                    <thead>
-                                        <tr>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>-->
-
-                <table class="display" id="table">
+                <table id="table" >
                     <thead>
-                        <th class="heading">Task Code</th>
-                        <th class="heading">Description</th>
-                        <th class="heading">Status</th>
-                        <th class="heading">Created Time</th>
-                        <%--<c:if test="${tasksearchform.isAddBut}"><th class="heading">Edit</th></c:if>--%>
-                        <th class="heading">Edit</th>
-                        <th class="heading">Delete</th>
+                        <tr>
+                        </tr>
                     </thead>
                     <tbody>
                     </tbody>
-
                 </table>
+
+                <!--                <table class="display" id="table">
+                                    <thead>
+                                        <th class="heading">Task Code</th>
+                                        <th class="heading">Description</th>
+                                        <th class="heading">Status</th>
+                                        <th class="heading">Created Time</th>
+                <%--<c:if test="${tasksearchform.isAddBut}"><th class="heading">Edit</th></c:if>--%>
+            <th class="heading">Edit</th>
+            <th class="heading">Delete</th>
+        </thead>
+        <tbody>
+        </tbody>
+
+    </table>-->
             </div>
         </div>
 

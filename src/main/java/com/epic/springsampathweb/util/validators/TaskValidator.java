@@ -38,29 +38,37 @@ public class TaskValidator implements Validator {
         String description = taskBean.getDescription();
 //        String status = taskBean.getStatus();
 
-        String ALPHA_NUMERIC_PATTERN = "^[a-zA-Z0-9]*$";
+        String ALPHA_NUMERIC_PATTERN = "^[a-zA-Z0-9 ]*$";
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "taskCode", MessageVarList.TASK_MGT_CODE_EMPTY);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", MessageVarList.TASK_MGT_DES_EMPTY);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "status", MessageVarList.TASK_MGT_STATUS_EMPTY);
-
-        //Business validation
-        if (taskCode != null && !taskCode.isEmpty()) {
-            pattern = Pattern.compile(ALPHA_NUMERIC_PATTERN);
-            matcher = pattern.matcher(taskCode);
-            if (!matcher.matches()) {
-
-                errors.rejectValue("taskCode", MessageVarList.TASK_MGT_CODE_ERROR);
-            }
-        } if (description != null && !description.isEmpty()) {
-            pattern = Pattern.compile(ALPHA_NUMERIC_PATTERN);
-            matcher = pattern.matcher(description);
-            if (!matcher.matches()) {
-
-                errors.rejectValue("description", MessageVarList.TASK_MGT_DES_ERROR);
-            }
+        if (!errors.hasErrors()) {
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", MessageVarList.TASK_MGT_DES_EMPTY);
+        }
+        if (!errors.hasErrors()) {
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "status", MessageVarList.TASK_MGT_STATUS_EMPTY);
         }
 
+        if (!errors.hasErrors()) {
+            //Business validation
+            if (taskCode != null && !taskCode.isEmpty()) {
+                pattern = Pattern.compile(ALPHA_NUMERIC_PATTERN);
+                matcher = pattern.matcher(taskCode);
+                if (!matcher.matches()) {
+
+                    errors.rejectValue("taskCode", MessageVarList.TASK_MGT_CODE_ERROR);
+                }
+            }
+        }
+        if (!errors.hasErrors()) {
+            if (description != null && !description.isEmpty()) {
+                pattern = Pattern.compile(ALPHA_NUMERIC_PATTERN);
+                matcher = pattern.matcher(description);
+                if (!matcher.matches()) {
+
+                    errors.rejectValue("description", MessageVarList.TASK_MGT_DES_ERROR);
+                }
+            }
+        }
     }
 
 }

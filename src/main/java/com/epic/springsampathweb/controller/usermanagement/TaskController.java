@@ -89,16 +89,17 @@ public class TaskController implements AccessControlService {
     DataTablesResponse<TaskBean> List(@RequestBody DataTablesRequest dtReq, HttpServletResponse response) throws Exception {
 
         // Column names of the table view
-        String[] cols = {"TASKCODE", "DESCRIPTION", "STATUS", "LASTUPDATEDUSER", "LASTUPDATEDTIME", "CREATEDTIME"};
+        String[] cols = {"TASKCODE", "TK.DESCRIPTION", "STATUSDES", "LASTUPDATEDUSER", "LASTUPDATEDTIME", "CREATEDTIME"};
 
         String globalSearch = "";
         String searchSQL = "";
+        String orderBySQL = "";
 
         if (!dtReq.searchQuery.contains("'") && !dtReq.searchQuery.contains("\"")) {
 
             globalSearch = " (TASKCODE LIKE '%" + dtReq.searchQuery + "%'"
-                    + " OR DESCRIPTION LIKE '%" + dtReq.searchQuery + "%'"
-                    + " OR STATUS LIKE '%" + dtReq.searchQuery + "%'"
+                    + " OR TK.DESCRIPTION LIKE '%" + dtReq.searchQuery + "%'"
+                    + " OR ST.DESCRIPTION LIKE '%" + dtReq.searchQuery + "%'"
                     + " OR LASTUPDATEDUSER LIKE '%" + dtReq.searchQuery + "%'"
                     + " OR LASTUPDATEDTIME LIKE '%" + dtReq.searchQuery + "%'"
                     + " OR CREATEDTIME LIKE '%" + dtReq.searchQuery + "%')";
@@ -109,11 +110,11 @@ public class TaskController implements AccessControlService {
         searchSQL = globalSearch;
 
         // Ordering and limiting for pagination
-        searchSQL += " ORDER BY " + cols[dtReq.sortedColumns.get(0)] + " " + dtReq.sortDirections.get(0);
+        orderBySQL = " ORDER BY " + cols[dtReq.sortedColumns.get(0)] + " " + dtReq.sortDirections.get(0);
 
         int end = dtReq.displayLength + dtReq.displayStart;
 
-        List<TaskBean> listotptask = taskDAO.listTaskForJson(searchSQL, dtReq.displayStart, end);
+        List<TaskBean> listotptask = taskDAO.listTaskForJson(searchSQL,orderBySQL, dtReq.displayStart, end);
 
         long countTasks = taskDAO.countTaskForJson(searchSQL);
 

@@ -12,16 +12,21 @@ import com.epic.springsampathweb.dao.common.CommonDAO;
 import com.epic.springsampathweb.dao.login.LoginDAO;
 import com.epic.springsampathweb.util.common.CommonUtil;
 import com.epic.springsampathweb.util.common.SessionBean;
+import com.epic.springsampathweb.util.varlist.LogoutMsgVarList;
 import com.epic.springsampathweb.util.varlist.SessionVarlist;
 import com.epic.springsampathweb.util.varlist.StatusVarList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -57,14 +62,27 @@ public class LoginController {
 
             if (userBean.getPassword().equals(CommonUtil.makeHash(inputBean.getPassword()))) {
 
-                sessionBean.setSystemUser(userBean);
-                request.getSession().setAttribute(SessionVarlist.SYSTEMUSER, userBean);
+                HttpSession session = request.getSession(true);
 
-                request.getSession().setAttribute(SessionVarlist.LOGGEDDATE, commonDAO.getCurrentDate());
-                request.getSession().setAttribute(SessionVarlist.CURRENTDATE, commonDAO.getCurrentDate());
-                
+                //set user and sessionid to hashmap
+                HashMap<String, String> userMap = null;
+
+                ServletContext sc = request.getServletContext();
+                userMap = (HashMap<String, String>) sc.getAttribute(SessionVarlist.USERMAP);
+                if (userMap == null) {
+                    userMap = new HashMap<String, String>();
+                }
+                userMap.put(inputBean.getUserName(), session.getId());
+                sc.setAttribute(SessionVarlist.USERMAP, userMap);
+
+                sessionBean.setSystemUser(userBean);
+                session.setAttribute(SessionVarlist.SYSTEMUSER, userBean);
+
+                session.setAttribute(SessionVarlist.LOGGEDDATE, commonDAO.getCurrentDate());
+                session.setAttribute(SessionVarlist.CURRENTDATE, commonDAO.getCurrentDate());
+
                 HashMap<SectionBean, List<PageBean>> sectionPages = loginDao.getSectionPages(userBean.getUserRole());
-                request.getSession().setAttribute(SessionVarlist.SECTIONPAGELIST, sectionPages);
+                session.setAttribute(SessionVarlist.SECTIONPAGELIST, sectionPages);
 
                 sessionBean.setSectionPages(sectionPages);
 
@@ -104,11 +122,47 @@ public class LoginController {
         }
     }
 
-    @RequestMapping(value = "/LogoutUserLogin")
-    public ModelAndView logoutUserLogin(HttpServletRequest request) throws Exception {
+    @RequestMapping(value = "/LogoutUserLogin/{message}")
+    public ModelAndView logoutUserLogin(HttpServletRequest request, @PathVariable Map<String, String> pathVars, Model model) throws Exception {
+        String msg = "";
+
+        System.out.println("path vari:" + pathVars.get("message"));
+        msg = pathVars.get("message");
+
+        if (msg.equalsIgnoreCase("ERROR_ACCESS")) {
+            model.addAttribute("errorMessage", LogoutMsgVarList.ERROR_ACCESS);
+        } else if (msg.equals("ERROR_ACCESSPOINT")) {
+            model.addAttribute("errorMessage", LogoutMsgVarList.ERROR_ACCESSPOINT);
+        } else if (msg.equals("ERROR_USER_INFO")) {
+            model.addAttribute("errorMessage", LogoutMsgVarList.ERROR_USER_INFO);
+        } else if (msg.equals("PASSWORD_CHANGE_SUCCESS")) {
+            model.addAttribute("errorMessage", LogoutMsgVarList.PASSWORD_CHANGE_SUCCESS);
+        } else {
+            model.addAttribute("errorMessage", LogoutMsgVarList.ERROR_SESSION);
+        }
 
         HttpSession session = request.getSession(false);
-        session.invalidate();
+        if (session != null) {
+
+            session.invalidate();
+        }
+
+        ModelAndView modelAndView;
+
+        modelAndView = new ModelAndView("login");
+
+        return modelAndView;
+
+    }
+    
+    @RequestMapping(value = "/LogoutNow")
+    public ModelAndView logoutUserLogin(HttpServletRequest request) throws Exception {
+        
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+
+            session.invalidate();
+        }
 
         ModelAndView modelAndView;
 

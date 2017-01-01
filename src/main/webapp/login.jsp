@@ -1,5 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <html>
     <head>
         <link href="resources/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -68,7 +70,7 @@
                                 <div class="panel-body">
                                     <div class="row">
                                         <div class="col-sm-12">
-                                            <form id="login-form" class="login-form" novalidate="novalidate" action="CheckUserLogin" method="post">
+                                            <form id="login-form" name="login-form" class="login-form" novalidate="novalidate" action="CheckUserLogin" method="post">
                                                 <div class="input-group form-group">
                                                     <span class="input-group-addon"><i class="glyphicon glyphicon-user" style="color:#999999;"></i></span>
                                                     <input type="text" class="form-control" placeholder="userName" name="userName">

@@ -14,5 +14,6 @@ public class SessionVarlist {
     public static final String SYSTEMUSER = "SYSTEMUSER";
     public static final String LOGGEDDATE = "LOGGEDDATE";
     public static final String CURRENTDATE = "CURRENTDATE";
+    public static final String USERMAP = "USERMAP";
     
 }

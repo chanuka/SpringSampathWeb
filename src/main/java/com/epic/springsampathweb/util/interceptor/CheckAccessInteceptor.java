@@ -9,6 +9,11 @@ import com.epic.springsampathweb.dao.common.CommonDAO;
 import com.epic.springsampathweb.util.common.AccessControlService;
 import com.epic.springsampathweb.util.common.AuditBean;
 import com.epic.springsampathweb.util.common.SessionBean;
+import com.epic.springsampathweb.util.varlist.LogoutMsgVarList;
+import com.epic.springsampathweb.util.varlist.SessionVarlist;
+import java.util.HashMap;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,23 +45,37 @@ public class CheckAccessInteceptor implements HandlerInterceptor {
 
             if (sessionBean.getSystemUser() != null) {
 
-                if (method.getBean() instanceof AccessControlService) {
+                ServletContext sc = request.getServletContext();
+                HashMap<String, String> userMap = (HashMap<String, String>) sc.getAttribute(SessionVarlist.USERMAP);
+                String sessionId = userMap.get(sessionBean.getSystemUser().getUserName());
 
-                    if (((AccessControlService) method.getBean()).checkAccess(methodName, "ADMIN")) {
-                        return true;
+                if (sessionId.equals(request.getSession(false).getId())) {
+
+                    if (method.getBean() instanceof AccessControlService) {
+
+                        if (((AccessControlService) method.getBean()).checkAccess(methodName, sessionBean.getSystemUser().getUserRole())) {
+                            return true;
+                        } else {
+                            RequestDispatcher rd = request.getRequestDispatcher("LogoutUserLogin/ERROR_ACCESS");
+                            rd.forward(request, response);
+//                            response.sendRedirect("LogoutUserLogin");
+                            System.out.println("Method Access Denied :");
+                            return false;
+
+                        }
                     } else {
-                        response.sendRedirect("login.jsp");
-                        System.out.println("Access Denied :");
-                        return false;
-
+                        return true;
                     }
-                } else {
-                    return true;
+                } else {//multi access
+                    RequestDispatcher rd = request.getRequestDispatcher("LogoutUserLogin/ERROR_ACCESSPOINT");
+                    rd.forward(request, response);
+                    System.out.println("multi access denied :");
+                    return false;
                 }
+            } else {//session expire
 
-            } else {
-
-                response.sendRedirect("login.jsp");
+                RequestDispatcher rd = request.getRequestDispatcher("LogoutUserLogin/ERROR_USER_INFO");
+                rd.forward(request, response);
                 System.out.println("session expire :");
                 return false;
             }
@@ -69,26 +88,33 @@ public class CheckAccessInteceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView mav) throws Exception {
         System.out.println("called post handler :");
 
-        HandlerMethod method = (HandlerMethod) handler;
-        String methodName = method.getMethod().getName();
         try {
-            // Set Audittrace
-            if (sessionBean != null && sessionBean.getSystemUser() != null) {
 
-                AuditBean audittrace = sessionBean.getAuditTrace();
+            if (handler instanceof HandlerMethod) {
 
-                if (audittrace != null && !audittrace.isSkip()) {
-                    
-                    audittrace.setCreatetime(commonDAO.getCurrentDate());
-                    audittrace.setLastupdatedtime(commonDAO.getCurrentDate());
-                    
-                    String status = commonDAO.insertAudit(audittrace);
+                HandlerMethod method = (HandlerMethod) handler;
+                String methodName = method.getMethod().getName();
+                // Set Audittrace
+                if (sessionBean != null && sessionBean.getSystemUser() != null) {
 
-                    System.out.println("Audittrace inserted status : " + status);
-                } else {
-                    System.out.println("Audittrace Skipped in method :" + methodName);
+                    AuditBean audittrace = sessionBean.getAuditTrace();
+
+                    if (audittrace != null && !audittrace.isSkip()) {
+
+                        audittrace.setCreatetime(commonDAO.getCurrentDate());
+                        audittrace.setLastupdatedtime(commonDAO.getCurrentDate());
+
+                        String status = commonDAO.insertAudit(audittrace);
+
+                        System.out.println("Audittrace inserted status : " + status);
+                    } else {
+                        System.out.println("Audittrace Skipped in method :" + methodName);
+                    }
+
                 }
 
+            } else {
+                System.out.println("Not a HandlerMethod :");
             }
 
         } catch (Exception e) {

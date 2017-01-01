@@ -21,6 +21,7 @@ public class TaskMapper implements RowMapper<TaskBean> {
 		  TaskBean task = new TaskBean();
 		  task.setTaskCode(rs.getString("TASKCODE"));
 		  task.setStatus(rs.getString("STATUS"));
+		  task.setStatusDes(rs.getString("STATUSDES"));
 		  task.setDescription(rs.getString("DESCRIPTION"));
 		  task.setLastupdatedtime((rs.getDate("LASTUPDATEDTIME")));
 //		  task.setCreatedtime((rs.getDate("CREATEDTIME")));

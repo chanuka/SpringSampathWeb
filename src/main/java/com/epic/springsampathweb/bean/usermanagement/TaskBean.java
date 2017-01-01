@@ -18,6 +18,7 @@ public class TaskBean {
     private String taskCode;
     private String description;
     private String status;
+    private String statusDes;
     private String message;
     private Date lastupdatedtime;
     private Date createdtime;
@@ -40,6 +41,14 @@ public class TaskBean {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getStatusDes() {
+        return statusDes;
+    }
+
+    public void setStatusDes(String statusDes) {
+        this.statusDes = statusDes;
     }
 
     public String getTaskCode() {

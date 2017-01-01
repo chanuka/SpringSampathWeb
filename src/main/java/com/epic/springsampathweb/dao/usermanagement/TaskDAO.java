@@ -85,10 +85,10 @@ public class TaskDAO {
         String strSqlBasic = null;
         try {
 
-            strSqlBasic = " SELECT COUNT(*) FROM TASK WHERE " + searchSQL;
+            strSqlBasic = " SELECT COUNT(*) FROM TASK TK,STATUS ST WHERE TK.STATUS=ST.STATUSCODE AND " + searchSQL;
 
             String SQL = strSqlBasic;
-            countTask = jdbcTemplate.queryForObject(SQL,Long.class);
+            countTask = jdbcTemplate.queryForObject(SQL, Long.class);
 
         } catch (Exception e) {
             // TODO: handle exception
@@ -98,13 +98,13 @@ public class TaskDAO {
         return countTask;
     }
 
-    public List<TaskBean> listTaskForJson(String searchSQL, int start, int end) throws Exception {
+    public List<TaskBean> listTaskForJson(String searchSQL, String orderBySQL, int start, int end) throws Exception {
 
         List<TaskBean> OtpTasks = null;
         String strSqlBasic = null;
         try {
 
-            strSqlBasic = " SELECT * FROM ( SELECT * FROM (SELECT TASKCODE,DESCRIPTION,STATUS,LASTUPDATEDUSER,LASTUPDATEDTIME,to_char(createdtime,'yyyy-mm-dd HH:MI:SS') AS createdtime,ROWNUM R FROM TASK WHERE " + searchSQL + "  )"
+            strSqlBasic = " SELECT * FROM ( SELECT * FROM (SELECT TK.TASKCODE,TK.DESCRIPTION,TK.STATUS,ST.DESCRIPTION AS STATUSDES,TK.LASTUPDATEDUSER,TK.LASTUPDATEDTIME,to_char(TK.createdtime,'yyyy-mm-dd HH:MI:SS') AS createdtime,ROWNUM R FROM TASK TK,STATUS ST WHERE TK.STATUS=ST.STATUSCODE AND " + searchSQL + orderBySQL + "  )"
                     + " WHERE R <=  " + end + "  ) WHERE R > " + start;
 
             String SQL = strSqlBasic;
@@ -123,7 +123,7 @@ public class TaskDAO {
         TaskBean taskBean = null;
 
         try {
-            String sql = "select DESCRIPTION,TASKCODE,STATUS,CREATEDTIME,LASTUPDATEDTIME from TASK WHERE TASKCODE=?";
+            String sql = "select TK.DESCRIPTION,TASKCODE,STATUS,ST.DESCRIPTION AS STATUSDES,CREATEDTIME,LASTUPDATEDTIME from TASK TK,STATUS ST WHERE TK.STATUS=ST.STATUSCODE AND TASKCODE=?";
 
             taskBean = jdbcTemplate.queryForObject(sql, new Object[]{taskCode}, new TaskMapper());
 

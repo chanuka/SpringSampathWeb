@@ -49,6 +49,7 @@
         <mvc:interceptor>  
             <mvc:mapping path="/**" />  
             <mvc:exclude-mapping path="/CheckUserLogin" />
+            <mvc:exclude-mapping path="/LogoutUserLogin/**" />
             <bean class="com.epic.springsampathweb.util.interceptor.CheckAccessInteceptor"/>  
                      
         </mvc:interceptor>

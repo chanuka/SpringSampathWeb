@@ -86,7 +86,7 @@
                         <a title="Change Password" href="ViewChangePassword.action?message=error3" id="linka" class="btn1" onmouseover="changepasshover();" onmouseout="changepassout();"><span style="color: #cccccc;">Change Password&nbsp&nbsp&nbsp<i id="changepassword" class="fa fa-lock" aria-hidden="true"></i></span></a>
                     </div>
                     <div id="btnin">
-                        <a title="Logout" href="LogoutUserLogin?message=error3" id="linka" class="btn2" onmouseover="login();" onmouseout="logout();"><span style="color: #ffcc33;">Logout&nbsp&nbsp&nbsp<i id="login_out" class="fa fa-chevron-circle-left" aria-hidden="true"></i></span></a>
+                        <a title="Logout" href="LogoutNow" id="linka" class="btn2" onmouseover="login();" onmouseout="logout();"><span style="color: #ffcc33;">Logout&nbsp&nbsp&nbsp<i id="login_out" class="fa fa-chevron-circle-left" aria-hidden="true"></i></span></a>
                     </div>
                     <div id="btnin">
                         <a title="View Last Login details" href="#" id="linka" class="btn1"><span style="color:#ffffff;">Last Login Details&nbsp&nbsp&nbsp<i class="fa fa-info-circle" aria-hidden="true"></i></span></a>

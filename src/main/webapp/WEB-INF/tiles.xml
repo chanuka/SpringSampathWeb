@@ -4,6 +4,16 @@
       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd"> 
 <tiles-definitions>  
     
+    <definition name="welcome.definition" template="/welcomepage.jsp">  
+        <put-attribute name="title" value="" />  
+        <put-attribute name="body" value="" />  
+        <!--<put-attribute name="footer" value="/WEB-INF/jsp/template/footer.jsp" />-->  
+    </definition> 
+    <definition name="welcome" extends="welcome.definition">  
+        <put-attribute name="title" value="Hello Spring MVC" />  
+        <put-attribute name="body" value="/welcomepage.jsp" />  
+    </definition> 
+    
     <definition name="login.definition" template="/login.jsp">  
         <put-attribute name="title" value="" />  
         <put-attribute name="body" value="" />  

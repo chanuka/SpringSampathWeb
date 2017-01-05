@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
-                             http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
 
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
 
-
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/dispatcher-servlet.xml</param-value>
+    </context-param>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
     <servlet>
         <servlet-name>dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
+        <load-on-startup>2</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
@@ -21,7 +27,7 @@
         <param-value>V1.00</param-value>
     </context-param>
     
-    <servlet-mapping>
+    <!--    <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>*.png</url-pattern>
     </servlet-mapping>
@@ -44,14 +50,16 @@
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>*.woff</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping>-->
+       
     <session-config>
         <session-timeout>
             1
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>welcomepage.jsp</welcome-file>
+        <!--<welcome-file>welcomepage.jsp</welcome-file>-->
+        <welcome-file>login</welcome-file>
         <!--<welcome-file>redirect.jsp</welcome-file>-->
     </welcome-file-list>
 </web-app>

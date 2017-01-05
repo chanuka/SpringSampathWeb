@@ -51,6 +51,8 @@ public class LoginController {
     @RequestMapping(value = "/CheckUserLogin", method = RequestMethod.POST)
     public ModelAndView checkLogin(HttpServletRequest request, @ModelAttribute("loginform") SystemUserBean inputBean) throws Exception {
 
+        System.out.println("called LoginController : checkLogin");
+
         ModelAndView modelAndView;
         System.out.println("username :" + inputBean.getUserName());
 
@@ -124,6 +126,8 @@ public class LoginController {
 
     @RequestMapping(value = "/LogoutUserLogin/{message}")
     public ModelAndView logoutUserLogin(HttpServletRequest request, @PathVariable Map<String, String> pathVars, Model model) throws Exception {
+
+        System.out.println("called LoginController : logout with error");
         String msg = "";
 
         System.out.println("path vari:" + pathVars.get("message"));
@@ -158,6 +162,8 @@ public class LoginController {
     @RequestMapping(value = "/LogoutNow")
     public ModelAndView logoutUserLogin(HttpServletRequest request) throws Exception {
 
+        System.out.println("called LoginController : logout");
+
         HttpSession session = request.getSession(false);
         if (session != null) {
 
@@ -175,7 +181,7 @@ public class LoginController {
     @RequestMapping("/")
     public ModelAndView checkLogin(HttpServletRequest request) throws Exception {
 
-        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" + request.getRequestURL());
+        System.out.println("called LoginController : welcome");
         ModelAndView modelAndView;
 
 //        modelAndView = new ModelAndView("login");

@@ -33,8 +33,21 @@ public class CheckAccessInteceptor implements HandlerInterceptor {
     @Autowired
     private CommonDAO commonDAO;
 
+    /**
+     * @return the sessionBean
+     */
+    public SessionBean getSessionBean() {
+        return sessionBean;
+    }
+
+    public void setSessionBean(SessionBean sessionBean) {
+        this.sessionBean = sessionBean;
+    }
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
+        boolean status = false;
 
         if (handler instanceof HandlerMethod) {
 
@@ -54,39 +67,47 @@ public class CheckAccessInteceptor implements HandlerInterceptor {
                     if (method.getBean() instanceof AccessControlService) {
 
                         if (((AccessControlService) method.getBean()).checkAccess(methodName, sessionBean.getSystemUser().getUserRole())) {
-                            return true;
+
+                            status = true;
                         } else {
                             RequestDispatcher rd = request.getRequestDispatcher("LogoutUserLogin/ERROR_ACCESS");
                             rd.forward(request, response);
 //                            response.sendRedirect("LogoutUserLogin");
                             System.out.println("Method Access Denied :");
-                            return false;
+
+                            status = false;
 
                         }
                     } else {
-                        return true;
+
+                        status = true;
                     }
                 } else {//multi access
                     RequestDispatcher rd = request.getRequestDispatcher("LogoutUserLogin/ERROR_ACCESSPOINT");
                     rd.forward(request, response);
                     System.out.println("multi access denied :");
-                    return false;
+
+                    status = false;
                 }
             } else {//session expire
 
                 RequestDispatcher rd = request.getRequestDispatcher("LogoutUserLogin/ERROR_USER_INFO");
                 rd.forward(request, response);
                 System.out.println("session expire :");
-                return false;
+
+                status = false;
             }
         } else {
-            return true;
+            status = true;
         }
+        return status;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView mav) throws Exception {
+
         System.out.println("called post handler :");
+        System.out.println("Request URL::" + request.getRequestURL().toString());
 
         try {
 
@@ -126,7 +147,6 @@ public class CheckAccessInteceptor implements HandlerInterceptor {
                 throw e;
             }
         }
-
     }
 
     @Override

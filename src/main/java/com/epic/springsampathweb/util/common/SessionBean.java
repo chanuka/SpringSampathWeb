@@ -8,6 +8,7 @@ package com.epic.springsampathweb.util.common;
 import com.epic.springsampathweb.bean.login.PageBean;
 import com.epic.springsampathweb.bean.login.SectionBean;
 import com.epic.springsampathweb.bean.usermanagement.SystemUserBean;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import org.springframework.context.annotation.Scope;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("session")
-public class SessionBean {
+public class SessionBean implements Serializable {
 
     HashMap<SectionBean, List<PageBean>> sectionPages;
     HashMap<String, List<String>> pageTasks;

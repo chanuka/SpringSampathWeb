@@ -154,10 +154,10 @@ public class LoginController {
         return modelAndView;
 
     }
-    
+
     @RequestMapping(value = "/LogoutNow")
     public ModelAndView logoutUserLogin(HttpServletRequest request) throws Exception {
-        
+
         HttpSession session = request.getSession(false);
         if (session != null) {
 
@@ -167,6 +167,19 @@ public class LoginController {
         ModelAndView modelAndView;
 
         modelAndView = new ModelAndView("login");
+
+        return modelAndView;
+
+    }
+
+    @RequestMapping("/")
+    public ModelAndView checkLogin(HttpServletRequest request) throws Exception {
+
+        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" + request.getRequestURL());
+        ModelAndView modelAndView;
+
+//        modelAndView = new ModelAndView("login");
+        modelAndView = new ModelAndView("welcome");
 
         return modelAndView;
 

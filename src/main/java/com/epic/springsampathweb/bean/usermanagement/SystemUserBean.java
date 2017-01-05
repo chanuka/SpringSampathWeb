@@ -6,6 +6,7 @@
 package com.epic.springsampathweb.bean.usermanagement;
 
 import com.epic.springsampathweb.util.common.StatusBean;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  *
  * @author chanuka
  */
-public class SystemUserBean {
+public class SystemUserBean implements Serializable{
 
     private String userName;
     private String userRole;

@@ -13,18 +13,19 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-
         <script type="text/javascript">
 
             var oTable;
-            $(document).ready(function() {
+
+            $(document).ready(function () {
 
                 var token = $("meta[name='_csrf']").attr("content");
                 var header = $("meta[name='_csrf_header']").attr("content");
-                var stringify_aoData = function(aoData) {
+
+                var stringify_aoData = function (aoData) {
                     var o = {};
                     var modifiers = ['mDataProp_', 'sSearch_', 'iSortCol_', 'bSortable_', 'bRegex_', 'bSearchable_', 'sSortDir_'];
-                    jQuery.each(aoData, function(idx, obj) {
+                    jQuery.each(aoData, function (idx, obj) {
                         if (obj.name) {
                             for (var i = 0; i < modifiers.length; i++) {
                                 if (obj.name.substring(0, modifiers[i].length) == modifiers[i]) {
@@ -48,11 +49,12 @@
                     });
                     return JSON.stringify(o);
                 };
+
                 oTable = $('#table').dataTable({
                     "bProcessing": true,
                     "bServerSide": true,
                     "sAjaxSource": "${pageContext.servletContext.contextPath}/listTask",
-                    "fnServerData": function(sSource, aoData, fnCallback) {
+                    "fnServerData": function (sSource, aoData, fnCallback) {
                         //    	alert(token);
                         aoData.push({'name': 'csrf_token', 'value': token});
                         aoData.push({'name': 'header', 'value': header});
@@ -63,19 +65,19 @@
                             url: "${pageContext.servletContext.contextPath}/listTask",
                             data: stringify_aoData(aoData),
                             success: fnCallback,
-                            error: function(e) {
-//                                alert(e);
+                            error: function (e) {
+                                //                                alert(e);
                                 window.location = "${pageContext.request.contextPath}/login.jsp";
                             }
                         });
                     },
-//                    "fnRowCallback": function(nRow, aData, iDisplayIndex) {
-//                        if (iDisplayIndex % 2 == 1)
-//                            nRow.className = "gradeA odd";
-//                        else
-//                            nRow.className = "gradeA even";
-//                        return nRow;
-//                    },
+                    //                    "fnRowCallback": function(nRow, aData, iDisplayIndex) {
+                    //                        if (iDisplayIndex % 2 == 1)
+                    //                            nRow.className = "gradeA odd";
+                    //                        else
+                    //                            nRow.className = "gradeA even";
+                    //                        return nRow;
+                    //                    },
                     "bJQueryUI": true,
                     "sPaginationType": "full_numbers",
                     bDeferRender: true,
@@ -102,194 +104,221 @@
                             "mDataProp": "createdtimeStr"
                         }, {
                             "title": "Edit",
+                            "visible": false,
                             sortable: false,
-//                            "sClass": "testclass",
-                            "render": function(data, type, full, meta) {
-
+                            //                            "sClass": "testclass",
+                            "render": function (data, type, full, meta) {
                                 return '<a title="Edit Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="editTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-edit"></span></a>';
                             },
                             "targets": 4
                         }, {
                             "title": "Delete",
                             sortable: false,
-//                            "sClass":"testclass",
-                            "render": function(data, type, full, meta) {
-                                return '<a title="Delete Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="deleteTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-remove"></span></a>';
+                            //                            "sClass":"testclass",
+                            "render": function (data, type, full, meta) {
+                                return '<a title="Delete Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="deleteTaskInit(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-remove"></span></a>';
                             },
                             "targets": 5
 
-                        }]
+                        }],
+                    "fnInitComplete": function (oSettings, json) {
+//                                $(oTable).parents('.dataTables_wrapper').first().find('thead').hide();                                
+
+                    }
+
                 });
             }); // end of document.ready function
 
 
-//-------------------------------------------------------------------------------------------------------------------------------
+            //-------------------------------------------------------------------------------------------------------------------------------
 
 
-//            var oTable;
-//            $(document).ready(function() {
-//
-//                var token = $("meta[name='_csrf']").attr("content");
-//                var header = $("meta[name='_csrf_header']").attr("content");
-//                var stringify_aoData = function(aoData) {
-//                    var o = {};
-//                    var modifiers = ['mDataProp_', 'sSearch_', 'iSortCol_', 'bSortable_', 'bRegex_', 'bSearchable_', 'sSortDir_'];
-//                    jQuery.each(aoData, function(idx, obj) {
-//                        if (obj.name) {
-//                            for (var i = 0; i < modifiers.length; i++) {
-//                                if (obj.name.substring(0, modifiers[i].length) == modifiers[i]) {
-//                                    var index = parseInt(obj.name.substring(modifiers[i].length));
-//                                    var key = 'a' + modifiers[i].substring(0, modifiers[i].length - 1);
-//                                    if (!o[key]) {
-//                                        o[key] = [];
-//                                    }
-//                                    //  console.log('index=' + index);
-//                                    o[key][index] = obj.value;
-//                                    //console.log(key + ".push(" + obj.value + ")");
-//                                    return;
-//                                }
-//                            }
-//                            // console.log(obj.name+"=" + obj.value);
-//                            o[obj.name] = obj.value;
-//                        }
-//                        else {
-//                            o[idx] = obj;
-//                        }
-//                    });
-//                    return JSON.stringify(o);
-//                };
-//
-//
-//                oTable = $('#table').dataTable({
-//                    "bProcessing": true,
-//                    "bServerSide": true,
-//                    "sAjaxSource": "${pageContext.servletContext.contextPath}/listTask",
-//                    "fnServerData": function(sSource, aoData, fnCallback) {
-//                        //    	alert(token);
-//                        aoData.push({'name': 'csrf_token', 'value': token});
-//                        aoData.push({'name': 'header', 'value': header});
-//
-//                        $.ajax({
-//                            dataType: 'json',
-//                            contentType: "application/json;charset=UTF-8",
-//                            type: 'POST',
-//                            url: "${pageContext.servletContext.contextPath}/listTask",
-//                            data: stringify_aoData(aoData),
-//                            success: fnCallback,
-//                            error: function(e) {
-////                                alert(e);
-//                                window.location = "${pageContext.request.contextPath}/login.jsp";
-//                            }
-//                        });
-//                    },
-//                    "fnRowCallback": function(nRow, aData, iDisplayIndex) {
-//                        if (iDisplayIndex % 2 == 1)
-//                            nRow.className = "gradeA odd";
-//                        else
-//                            nRow.className = "gradeA even";
-//                        return nRow;
-//                    },
-//                    "bJQueryUI": true,
-//                    "sPaginationType": "full_numbers",
-//                    bDeferRender: true,
-//                    responsive: true,
-//                    "aoColumns": [
-//                        {"mDataProp": "taskCode", "bVisible": true},
-//                        {"mDataProp": "description", "bVisible": true},
-//                        {"mDataProp": "statusDes", "bVisible": true},
-//                        {"mDataProp": "createdtimeStr", "bVisible": true},
-//                        {"mDataProp": "taskCode", "bVisible": true, "bSortable": false},
-//                        {"mDataProp": "taskCode", "bVisible": true, "bSortable": false}
-//                    ],
-//                    "aoColumnDefs": [
-//                        {
-//                            "aTargets": [4],
-//                            "mRender": function(data, type, full) {
-//                                return '<a title="Edit Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="editTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-edit"></span></a>';
-//                            }
-//
-//                        },
-//                        {
-//                            "aTargets": [5],
-//                            "mRender": function(data, type, full) {
-//                                return '<a title="Delete Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="deleteTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-remove"></span></a>';
-//                            }
-//
-//                        }
-//
-//                    ]
-//                });
-//            }); // end of document.ready function
-//
-//
-
-
-
+            //            var oTable;
+            //            $(document).ready(function() {
+            //
+            //                var token = $("meta[name='_csrf']").attr("content");
+            //                var header = $("meta[name='_csrf_header']").attr("content");
+            //                var stringify_aoData = function(aoData) {
+            //                    var o = {};
+            //                    var modifiers = ['mDataProp_', 'sSearch_', 'iSortCol_', 'bSortable_', 'bRegex_', 'bSearchable_', 'sSortDir_'];
+            //                    jQuery.each(aoData, function(idx, obj) {
+            //                        if (obj.name) {
+            //                            for (var i = 0; i < modifiers.length; i++) {
+            //                                if (obj.name.substring(0, modifiers[i].length) == modifiers[i]) {
+            //                                    var index = parseInt(obj.name.substring(modifiers[i].length));
+            //                                    var key = 'a' + modifiers[i].substring(0, modifiers[i].length - 1);
+            //                                    if (!o[key]) {
+            //                                        o[key] = [];
+            //                                    }
+            //                                    //  console.log('index=' + index);
+            //                                    o[key][index] = obj.value;
+            //                                    //console.log(key + ".push(" + obj.value + ")");
+            //                                    return;
+            //                                }
+            //                            }
+            //                            // console.log(obj.name+"=" + obj.value);
+            //                            o[obj.name] = obj.value;
+            //                        }
+            //                        else {
+            //                            o[idx] = obj;
+            //                        }
+            //                    });
+            //                    return JSON.stringify(o);
+            //                };
+            //
+            //
+            //                oTable = $('#table').dataTable({
+            //                    "bProcessing": true,
+            //                    "bServerSide": true,
+            //                    "sAjaxSource": "${pageContext.servletContext.contextPath}/listTask",
+            //                    "fnServerData": function(sSource, aoData, fnCallback) {
+            //                        //    	alert(token);
+            //                        aoData.push({'name': 'csrf_token', 'value': token});
+            //                        aoData.push({'name': 'header', 'value': header});
+            //
+            //                        $.ajax({
+            //                            dataType: 'json',
+            //                            contentType: "application/json;charset=UTF-8",
+            //                            type: 'POST',
+            //                            url: "${pageContext.servletContext.contextPath}/listTask",
+            //                            data: stringify_aoData(aoData),
+            //                            success: fnCallback,
+            //                            error: function(e) {
+            ////                                alert(e);
+            //                                window.location = "${pageContext.request.contextPath}/login.jsp";
+            //                            }
+            //                        });
+            //                    },
+            //                    "fnRowCallback": function(nRow, aData, iDisplayIndex) {
+            //                        if (iDisplayIndex % 2 == 1)
+            //                            nRow.className = "gradeA odd";
+            //                        else
+            //                            nRow.className = "gradeA even";
+            //                        return nRow;
+            //                    },
+            //                    "bJQueryUI": true,
+            //                    "sPaginationType": "full_numbers",
+            //                    bDeferRender: true,
+            //                    responsive: true,
+            //                    "aoColumns": [
+            //                        {"mDataProp": "taskCode", "bVisible": true},
+            //                        {"mDataProp": "description", "bVisible": true},
+            //                        {"mDataProp": "statusDes", "bVisible": true},
+            //                        {"mDataProp": "createdtimeStr", "bVisible": true},
+            //                        {"mDataProp": "taskCode", "bVisible": true, "bSortable": false},
+            //                        {"mDataProp": "taskCode", "bVisible": true, "bSortable": false}
+            //                    ],
+            //                    "aoColumnDefs": [
+            //                        {
+            //                            "aTargets": [4],
+            //                            "mRender": function(data, type, full) {
+            //                                return '<a title="Edit Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="editTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-edit"></span></a>';
+            //                            }
+            //
+            //                        },
+            //                        {
+            //                            "aTargets": [5],
+            //                            "mRender": function(data, type, full) {
+            //                                return '<a title="Delete Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="deleteTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-remove"></span></a>';
+            //                            }
+            //
+            //                        }
+            //
+            //                    ]
+            //                });
+            //            }); // end of document.ready function
+            //
+            //
 
 
 
-//-------------------------------------------------------------------------------------------------------------------------------
 
 
 
-//            var oTable;
-//
-//            $(document).ready(function() {
-//                oTable = $("#table").DataTable({
-//                    "data": "",
-//                    "pDestroy": true,
-//                    "ajax": {
-//                        "url": "listTask",
-//                        "type": "post",
-//                        "data": "",
-//                        "dataSrc": function(data) {
-//                            return data;
-//                        }
-//                    },
-//                    "columnDefs": [
-//                        {
-//                            "title": "Task Code",
-//                            "targets": 0,
-//                            "mDataProp": "taskCode"
-//                        },
-//                        {
-//                            "title": "Description",
-//                            "targets": 1,
-//                            "mDataProp": "description"
-//                        },
-//                        {
-//                            "title": "Status",
-//                            "targets": 2,
-//                            "mDataProp": "status"
-//                        },
-//                        {
-//                            "title": "Created Time",
-//                            "targets": 3,
-//                            "mDataProp": "createdtimeStr"
-//                        }, {
-//                            "title": "Edit",
-//                            sortable: false,
-//                            "render": function(data, type, full, meta) {
-//
-//                                return '<a title="Edit Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="editTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-edit"></span></a>';
-//                            },
-//                            "targets": 4
-//                        }, {
-//                            "title": "Delete",
-//                            sortable: false,
-//                            "render": function(data, type, full, meta) {
-//                                return '<a title="Delete Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="deleteTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-remove"></span></a>';
-//                            },
-//                            "targets": 5
-//                        }],
-//                    "sPaginationType": "full_numbers",
-//                    "bJQueryUI": true,
-//                    bDeferRender: true,
-//                    responsive: true
-//                });
-//            });
-//
+            //-------------------------------------------------------------------------------------------------------------------------------
 
+
+
+            //            var oTable;
+            //
+            //            $(document).ready(function() {
+            //                oTable = $("#table").DataTable({
+            //                    "data": "",
+            //                    "pDestroy": true,
+            //                    "ajax": {
+            //                        "url": "listTask",
+            //                        "type": "post",
+            //                        "data": "",
+            //                        "dataSrc": function(data) {
+            //                            return data;
+            //                        }
+            //                    },
+            //                    "columnDefs": [
+            //                        {
+            //                            "title": "Task Code",
+            //                            "targets": 0,
+            //                            "mDataProp": "taskCode"
+            //                        },
+            //                        {
+            //                            "title": "Description",
+            //                            "targets": 1,
+            //                            "mDataProp": "description"
+            //                        },
+            //                        {
+            //                            "title": "Status",
+            //                            "targets": 2,
+            //                            "mDataProp": "status"
+            //                        },
+            //                        {
+            //                            "title": "Created Time",
+            //                            "targets": 3,
+            //                            "mDataProp": "createdtimeStr"
+            //                        }, {
+            //                            "title": "Edit",
+            //                            sortable: false,
+            //                            "render": function(data, type, full, meta) {
+            //
+            //                                return '<a title="Edit Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="editTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-edit"></span></a>';
+            //                            },
+            //                            "targets": 4
+            //                        }, {
+            //                            "title": "Delete",
+            //                            sortable: false,
+            //                            "render": function(data, type, full, meta) {
+            //                                return '<a title="Delete Task" id=' + full.taskCode + ' class="btn btn-primary btn-xs  editor_retry"  onclick="deleteTask(\'' + full.taskCode + '\')"><span class="glyphicon glyphicon-remove"></span></a>';
+            //                            },
+            //                            "targets": 5
+            //                        }],
+            //                    "sPaginationType": "full_numbers",
+            //                    "bJQueryUI": true,
+            //                    bDeferRender: true,
+            //                    responsive: true
+            //                });
+            //            });
+            //
+
+            function deleteTaskInit(keyval) {
+
+                BootstrapDialog.show({
+                    title: 'Delete Task',
+                    message: 'Are you sure you want to delete task ' + keyval + '?',
+                    buttons: [{
+                            label: 'OK',
+                            action: function (dialog) {
+                                deleteTask(keyval);
+                                dialog.close();
+                            }
+                        }, {
+                            label: 'Close',
+                            cssClass: 'btn-primary',
+                            action: function (dialog) {
+                                dialog.close();
+                            }
+                        }]
+                });
+
+
+            }
 
             function editTask(keyval) {
 
@@ -299,7 +328,7 @@
                     data: {taskCode: keyval},
                     dataType: 'json',
                     imeout: 10000,
-                    success: function(data) {
+                    success: function (data) {
                         $('#divmsg').empty();
                         var msg = data.message;
                         if (msg) {
@@ -320,11 +349,12 @@
                             $('#addButton').prop('disabled', true);
                         }
                     },
-                    error: function(data) {
+                    error: function (data) {
                         window.location = "${pageContext.request.contextPath}/login.jsp";
                     }
                 });
             }
+
             function deleteTask(keyval) {
 
                 $.ajax({
@@ -332,13 +362,27 @@
                     url: "deleteTask",
                     data: {taskCode: keyval},
                     dataType: 'json',
-                    success: function(data) {
-                        alert(data.message);
-//                        oTable.ajax.reload();
+                    success: function (data) {
+//                                alert(data.message);
+                        //                        oTable.ajax.reload();
+
+                        BootstrapDialog.show({
+                            title: 'Deleting Process.',
+                            message: data.message,
+                            buttons: [{
+                                    label: 'OK',
+                                    cssClass: 'btn-primary',
+                                    action: function (dialogItself) {
+                                        dialogItself.close();
+
+                                    }
+                                }]
+                        });
+
                         oTable.fnDraw();
                         resetAllData();
                     },
-                    error: function(data) {
+                    error: function (data) {
                         window.location = "${pageContext.request.contextPath}/login.jsp";
                     }
                 });
@@ -368,21 +412,30 @@
             <!-- success Message -->
             <c:set var="successmsg" value="${successMessage}" />
             <c:if test="${not empty successmsg}">
-                <div id="msgsuccess" class="icon">
-                    <span class="tile-title message-success"><c:out
-                            value="${successMessage}" /></span>
+                <div id="msgsuccess" class="icon" style="background-color: #E5FEDA;color: green;font-weight: bold;padding: 5px;border-style: solid;border-color: green;border-width: 1px; ">
+                    <span class="tile-title message-success">
+                        <c:out value="${successMessage}" /></span>
                 </div>
             </c:if>
             <!-- Error Message -->
             <c:set var="errorMessage" value="${errorMessage}" />
             <c:if test="${not empty errorMessage}">
-                <div id="msgerror" class="icon">
+                <div id="msgerror" class="icon " style="background-color: #FEE5E7;color: red;font-weight: bold;padding: 5px;border-style: solid;border-color: red;border-width: 1px;">
                     <span class="tile-title message-error">
                         <c:out value="${errorMessage}" />
                     </span>
                 </div>
             </c:if>
-            <form:errors path="tasksearchform.*"/>
+            <!-- Form Error Message -->
+            <%--<form:errors path="tasksearchform.*"/>--%>
+            <c:set var="domainNameErrors"><form:errors path="tasksearchform.*"/></c:set>
+            <c:if test="${not empty domainNameErrors}">
+                <div id="msgerror" class="icon " style="background-color: #FEE5E7;color: #DF2834;font-weight: bold;padding: 5px;border-style: solid;border-color: #DF2834;border-width: 1px;">
+                    <span class="tile-title message-error">
+                        ${domainNameErrors}
+                    </span>
+                </div>
+            </c:if>
         </div>
 
         <div>

@@ -53,6 +53,11 @@
 <link rel="stylesheet" type="text/css"
       href="${pageContext.request.contextPath}/resources/css/dataTables/jquery.dataTables.min.css" />
 
+<link rel="stylesheet"  type="text/css" 
+      href="${pageContext.request.contextPath}/resources/css/bootstrapDialog/bootstrap-dialog.css">
+<link rel="stylesheet" type="text/css"
+      href="${pageContext.request.contextPath}/resources/css/bootstrapDialog/bootstrap-dialog.min.css">
+
 <script type="text/javascript"
 src="${pageContext.request.contextPath}/resources/js/datatables/jquery.dataTables.min.js"></script>
 <script type="text/javascript"
@@ -60,5 +65,11 @@ src="${pageContext.request.contextPath}/resources/js/datatables/dataTables.boots
 <script type="text/javascript"
 src="${pageContext.request.contextPath}/resources/js/datatables/dataTables.responsive.min.js"></script>
 <!-- end: MAIN JAVASCRIPTS -->
+
+<script type="text/javascript"
+src="${pageContext.request.contextPath}/resources/js/bootstrapDialog/bootstrap-dialog.js"></script>
+<script type="text/javascript"
+src="${pageContext.request.contextPath}/resources/js/bootstrapDialog/bootstrap-dialog.min.js"></script>
+
 
 

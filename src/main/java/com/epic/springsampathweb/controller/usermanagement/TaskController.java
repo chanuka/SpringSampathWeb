@@ -279,5 +279,33 @@ public class TaskController implements AccessControlService {
 
         return status;
     }
+    
+//    private boolean applyUserPrivileges() {
+//        HttpServletRequest request = ServletActionContext.getRequest();
+//        List<Task> tasklist = new Common().getUserTaskListByPage(PageVarList.TASK_MGT_PAGE, request);
+//
+//        inputBean.setVadd(true);
+//        inputBean.setVdelete(true);
+//        inputBean.setVupdatelink(true);
+//        inputBean.setVsearch(true);
+//
+//        if (tasklist != null && tasklist.size() > 0) {
+//            for (Task task : tasklist) {
+//                if (task.getTaskcode().toString().equalsIgnoreCase(TaskVarList.ADD_TASK)) {
+//                    inputBean.setVadd(false);
+//                } else if (task.getTaskcode().toString().equalsIgnoreCase(TaskVarList.DELETE_TASK)) {
+//                    inputBean.setVdelete(false);
+////                } else if (task.getTaskcode().toString().equalsIgnoreCase(TaskVarList.LOGIN_TASK)) {
+//                } else if (task.getTaskcode().toString().equalsIgnoreCase(TaskVarList.UPDATE_TASK)) {
+//                    inputBean.setVupdatelink(false);
+//                } else if (task.getTaskcode().toString().equalsIgnoreCase(TaskVarList.SEARCH_TASK)) {
+//                    inputBean.setVsearch(false);
+//                }
+//            }
+//        }
+//        inputBean.setVupdatebutt(true);
+//
+//        return true;
+//    }
 
 }

@@ -27,6 +27,12 @@ public class TaskBean {
     private boolean isAddBut;
     private List<StatusBean> statusBeanList;
 
+    /*-------for access control-----------*/
+    private boolean vadd;
+    private boolean vupdate;
+    private boolean vdelete;
+    /*-------for access control-----------*/
+
     public String getMessage() {
         return message;
     }
@@ -113,6 +119,30 @@ public class TaskBean {
 
     public void setIsAddBut(boolean isAddBut) {
         this.isAddBut = isAddBut;
+    }
+
+    public boolean isVadd() {
+        return vadd;
+    }
+
+    public void setVadd(boolean vadd) {
+        this.vadd = vadd;
+    }
+
+    public boolean isVupdate() {
+        return vupdate;
+    }
+
+    public void setVupdate(boolean vupdate) {
+        this.vupdate = vupdate;
+    }
+
+    public boolean isVdelete() {
+        return vdelete;
+    }
+
+    public void setVdelete(boolean vdelete) {
+        this.vdelete = vdelete;
     }
 
 }
